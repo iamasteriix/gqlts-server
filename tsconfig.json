@@ -1,11 +1,13 @@
 {
    "compilerOptions": {
-     "target": "es6",
+     "target": "es2017",
      "module": "commonjs",
      "lib": ["dom", "es6", "es2017", "esnext.asynciterable"],
      "sourceMap": true,
      "outDir": "./dist",
      "moduleResolution": "node",
+
+     "typeRoots": ["node_modules/@types", "src/@types"],
  
      "removeComments": true,
      "noImplicitAny": true,
@@ -20,6 +22,7 @@
      "emitDecoratorMetadata": true,
      "experimentalDecorators": true
    },
-   "exclude": ["node_modules"],
-   "include": ["./src/**/*.tsx", "./src/**/*.ts"]
+   "files": ["src/@types/schema.d.graphql"],
+   "include": ["./src/**/*.tsx", "./src/**/*.ts"],
+   "exclude": ["node_modules", "**/*.spec.ts"]
  }

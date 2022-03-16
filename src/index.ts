@@ -1,19 +1,14 @@
-import { createServer } from '@graphql-yoga/node'
+import {ApolloServer, gql } from 'apollo-server';
 
-// Create server
+import { resolvers } from "./resolvers";
+const QUERY = require('./schema.gql')
 
-const typeDefs = /* GraphQL */ `
-type Query {
-  hello: String
-}`
-
-const resolvers = {
-    Query: {
-      hello: (_: any, { name }: any) => `Hello ${name || "World"}`,
-    },
-}
-
+// provide schema
+const typeDefs = gql`${QUERY}`
 const schema = { typeDefs, resolvers }
 
-const server = createServer({ schema })
-server.start()
+// initialize server
+const server = new ApolloServer(schema)
+server.listen().then(({ url }) => {
+    console.log(`server is listening at port ${url}`);
+})
