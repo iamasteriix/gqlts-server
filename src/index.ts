@@ -1,14 +1,27 @@
-import {ApolloServer, gql } from 'apollo-server';
+import { ApolloServer } from 'apollo-server';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 
-import { resolvers } from "./resolvers";
-const QUERY = require('./schema.gql')
+import { resolvers } from './resolvers';
 
-// provide schema
-const typeDefs = gql`${QUERY}`
-const schema = { typeDefs, resolvers }
+
+/**
+ * TODO: import schema definition from gql file
+ * will probably need to add package `fs`
+
+const Query = readFileSync(require('./schema.gql'), 'utf-8');
+*/
+
+const schema = makeExecutableSchema({
+    typeDefs: `
+    type Query {
+        hello: String
+      }
+      `,
+    resolvers
+})
 
 // initialize server
-const server = new ApolloServer(schema)
+const server = new ApolloServer({schema})
 server.listen().then(({ url }) => {
     console.log(`server is listening at port ${url}`);
 })

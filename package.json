@@ -1,9 +1,10 @@
 {
    "name": "graphql-ts-server",
    "version": "0.0.1",
-   "description": "Awesome project developed with TypeORM.",
+   "description": "A boilerplate server made with TypeScript, Postgres and Redis for my future projects.",
    "type": "commonjs",
    "devDependencies": {
+      "@graphql-tools/schema": "^8.3.3",
       "@types/node": "^17.0.21",
       "@types/uuid": "^8.3.4",
       "ts-node": "10.7.0",
@@ -12,7 +13,6 @@
    "dependencies": {
       "apollo-server": "^3.6.4",
       "graphql": "^16.3.0",
-      "graphql-tag": "^2.12.6",
       "nodemon": "^2.0.15",
       "pg": "^8.7.3",
       "reflect-metadata": "^0.1.13",

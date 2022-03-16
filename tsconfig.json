@@ -22,7 +22,7 @@
      "emitDecoratorMetadata": true,
      "experimentalDecorators": true
    },
-   "files": ["src/@types/schema.d.graphql"],
-   "include": ["./src/**/*.tsx", "./src/**/*.ts"],
+   "files": ["src/@types/schema.d.ts"],
+   "include": ["./src/**/*"],
    "exclude": ["node_modules", "**/*.spec.ts"]
  }
