@@ -1,21 +1,19 @@
-import "reflect-metadata";
-import {createConnection} from "typeorm";
-import {User} from "./entity/User";
+import { createServer } from '@graphql-yoga/node'
 
-createConnection().then(async connection => {
+// Create server
 
-    console.log("Inserting a new user into the database...");
-    const user = new User();
-    user.firstName = "Timber";
-    user.lastName = "Saw";
-    user.age = 25;
-    await connection.manager.save(user);
-    console.log("Saved a new user with id: " + user.id);
+const typeDefs = /* GraphQL */ `
+type Query {
+  hello: String
+}`
 
-    console.log("Loading users from the database...");
-    const users = await connection.manager.find(User);
-    console.log("Loaded users: ", users);
+const resolvers = {
+    Query: {
+      hello: (_: any, { name }: any) => `Hello ${name || "World"}`,
+    },
+}
 
-    console.log("Here you can setup and run express/koa/any other framework.");
+const schema = { typeDefs, resolvers }
 
-}).catch(error => console.log(error));
+const server = createServer({ schema })
+server.start()
