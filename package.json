@@ -1,32 +1,25 @@
 {
-  "name": "graphql-ts-server",
-  "version": "1.0.0",
-  "description": "Boilerplate server made with TypeScript, Postgres and Redis for my projects.",
-  "author": "iamasteriix",
-  "license": "ISC",
-  "type": "commonjs",
-  "homepage": "https://github.com/iamasteriix/graphql-ts-server#readme",
-  "bugs": {
-    "url": "https://github.com/iamasteriix/graphql-ts-server/issues"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --exec ts-node src/server.ts"
-  },
-  "devDependencies": {
-    "@types/node": "^17.0.23",
-    "@typescript-eslint/eslint-plugin": "^5.19.0",
-    "@typescript-eslint/parser": "^5.19.0",
-    "eslint": "^8.13.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "nodemon": "^2.0.15",
-    "prettier": "^2.6.2",
-    "ts-node": "^10.7.0",
-    "typescript": "^4.6.3"
-  },
-  "dependencies": {
-    "apollo-server": "^3.6.7",
-    "graphql": "^16.3.0"
-  }
+   "name": "graphql-ts-server",
+   "version": "0.0.1",
+   "description": "Boilerplate server made with Typescript, Postgres and Redis",
+   "author": "iamasteriix",
+   "type": "commonjs",
+   "devDependencies": {
+      "@types/node": "^16.11.10",
+      "@typescript-eslint/eslint-plugin": "^5.25.0",
+      "@typescript-eslint/parser": "^5.25.0",
+      "eslint": "^8.15.0",
+      "ts-node": "10.7.0",
+      "typescript": "4.5.2"
+   },
+   "dependencies": {
+      "pg": "^8.4.0",
+      "reflect-metadata": "^0.1.13",
+      "typeorm": "0.3.6"
+   },
+   "scripts": {
+      "start": "ts-node src/index.ts",
+      "typeorm": "typeorm-ts-node-commonjs",
+      "lint": "eslint -c .eslintrc.js --ext .ts src"
+   }
 }
