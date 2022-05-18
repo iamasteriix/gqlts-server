@@ -1,38 +1,25 @@
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer } from 'apollo-server';
+import { loadSchema } from '@graphql-tools/load';
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
+
+import { resolvers } from './resolvers';
 
 
-const books = [
-	{
-		title: 'The Awakening',
-		author: 'Kate Chopin',
-	},
-	{  
-		title: 'City of Glass',
-		author: 'Paul Auster',
-	},  
-];
+async function main() {
+    
+  const typeDefs = await loadSchema('schema.gql', {
+      cwd: __dirname,
+      assumeValid: true,
+      assumeValidSDL: true,
+      skipGraphQLImport: true,
+      loaders: [new GraphQLFileLoader()]
+  })
 
-const typeDefs = gql`
-	type Book {
-		title: String
-		author: String
-	},
-	type Query {
-		books: [Book]
-	}
-`;
+  const server = new ApolloServer({ typeDefs, resolvers });
+  server.listen().then(({ url }) => {
+    console.log(`🚀  Server ready at ${url}`);
+  });
+}
 
-const resolvers = {
-	Query: {  
-	  books: () => books,
-	},
-  };
-
-// The ApolloServer constructor requires two parameters: your schema
-// definition and your set of resolvers.
-const server = new ApolloServer({ typeDefs, resolvers });
-
-// The `listen` method launches a web server.
-server.listen().then(({ url }) => {
-  console.log(`🚀  Server ready at ${url}`);
-});
+// run
+main();
