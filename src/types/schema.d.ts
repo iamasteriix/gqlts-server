@@ -21,6 +21,11 @@ export type Book = {
   title?: Maybe<Scalars['String']>;
 };
 
+export type CreateUserInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   register?: Maybe<Scalars['Boolean']>;
@@ -28,8 +33,7 @@ export type Mutation = {
 
 
 export type MutationRegisterArgs = {
-  email: Scalars['String'];
-  password: Scalars['String'];
+  input: CreateUserInput;
 };
 
 export type Query = {
@@ -108,6 +112,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Book: ResolverTypeWrapper<Book>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  CreateUserInput: CreateUserInput;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -117,6 +122,7 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Book: Book;
   Boolean: Scalars['Boolean'];
+  CreateUserInput: CreateUserInput;
   Mutation: {};
   Query: {};
   String: Scalars['String'];
@@ -129,7 +135,7 @@ export type BookResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  register?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password'>>;
+  register?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationRegisterArgs, 'input'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {

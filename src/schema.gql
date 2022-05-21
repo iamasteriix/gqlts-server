@@ -1,11 +1,15 @@
 type Book {
 	title: String
 	author: String
-},
+}
 type Query {
 	books: [Book]
 }
 
+input CreateUserInput {
+	email: String!
+	password: String!
+}
 type Mutation {
-	register(email: String!, password: String!): Boolean
+	register(input: CreateUserInput!): Boolean
 }
