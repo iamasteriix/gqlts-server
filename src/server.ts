@@ -7,7 +7,7 @@ import { AppDataSource } from './data-source';
 
 
 async function main() {
-    
+  // load schema  
   const typeDefs = await loadSchema('schema.gql', {
       cwd: __dirname,
       assumeValid: true,
@@ -21,10 +21,15 @@ async function main() {
   // initialize database connection
   await AppDataSource.initialize();
 
+  // start server
   server.listen().then(({ url }) => {
     console.log(`🚀  Server ready at ${url}`);
-    });
+  });
+  
 }
 
 // run
 main();
+
+// export for testing
+// export { main }

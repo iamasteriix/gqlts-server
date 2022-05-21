@@ -20,7 +20,7 @@ export const resolvers: ResolverMap = {
         register: async (_, args: MutationRegisterArgs) => {
             const userInput = args.input;
             const hashedPassword = await bcrypt.hash(userInput.password, 2);
-            User.create({
+            await User.create({
                 email: userInput.email,
                 password: hashedPassword
             }).save();
