@@ -1,7 +1,5 @@
-// import * as bcrypt from 'bcryptjs';
-
+import * as bcrypt from 'bcryptjs';
 import { MutationRegisterArgs } from "./types/schema";
-// import { User } from './entity/User';
 import { ResolverMap } from './types/graphql-utils';
 import { User } from "./entity/User";
 
@@ -19,11 +17,12 @@ export const resolvers: ResolverMap = {
         books: () => books,
     },
     Mutation: {
-        register: (_, args: MutationRegisterArgs) => {
+        register: async (_, args: MutationRegisterArgs) => {
             const userInput = args.input;
+            const hashedPassword = await bcrypt.hash(userInput.password, 2);
             User.create({
                 email: userInput.email,
-                password: userInput.password
+                password: hashedPassword
             }).save();
             return true
         }
