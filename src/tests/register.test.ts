@@ -5,7 +5,7 @@ import { devHost } from "./constants";
 const user = { email: 'fish@mail.com', password: 'milk' }
 
 const mutation = `
-    register(input: "${user}")
+    register(input: '${user}')
 `;
 
 test('Register user', async () => {
