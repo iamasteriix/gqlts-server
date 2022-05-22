@@ -4,8 +4,8 @@
 
 - [x] figure out what the problem with testing is.
 - [ ] use a test database; drop before running new tests.
-- [ ] figure out how port is suddenly still in use with nodemon.
-- [ ] get the apollo-server to work with Jest.
+- [x] figure out how port is suddenly still in use with nodemon.
+- [x] get the apollo-server to work with Jest.
 
 
 ## Useful resources
