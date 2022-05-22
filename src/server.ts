@@ -6,7 +6,7 @@ import { resolvers } from './resolvers';
 import { ServerDataSource } from './utils/selectConnection';
 
 
-async function main() {
+export default async function server() {
   // load schema  
   const typeDefs = await loadSchema('schema.gql', {
       cwd: __dirname,
@@ -22,14 +22,10 @@ async function main() {
   await ServerDataSource().initialize();
 
   // start server
-  server.listen().then(({ url }) => {
-    console.log(`🚀  Server ready at ${url}`);
+  const app = await server.listen({
+    port: process.env.NODE_ENV === 'test' ? 4001 : 4000
   });
-  
+  console.log(`🚀  Server ready at ${app.url}`);
+
+  return app;
 }
-
-// run
-main();
-
-// export for testing
-// export { main }

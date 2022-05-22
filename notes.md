@@ -2,8 +2,8 @@
 
 ### Dev logs
 
-- [x] use a test database; drop before running new tests.
-- [x] get the apollo-server to work with Jest.
+- [x] start and test test-server with just `npm test`.
+- [ ] I need to destroy the database connection after running test server, or the server connection. I'm not sure which one.
 
 
 ## Useful resources

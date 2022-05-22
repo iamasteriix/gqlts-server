@@ -1,14 +1,22 @@
 import { request, gql } from 'graphql-request';
-import { TestDataSource } from '../data-source';
 import { User } from '../entity/User';
-import { dev_endpoint } from "./constants";
+import server from '../server';
+
+
+let getAddress = () => '';
+
+beforeAll(async () => {
+    const app = await server();
+    const url = app.url;
+    getAddress = () => `${url}`
+});
 
 
 const email = "mario@mail.com";
 const password = "milk";
 const mutation = gql`
-        mutation($input: CreateUserInput!) {
-            register(input: $input)
+    mutation($input: CreateUserInput!) {
+        register(input: $input)
 }
 `;
 const variables = {
@@ -18,10 +26,10 @@ const variables = {
       }
 }
 
-it('Runs a health to test registering users', async () => {
-    await TestDataSource.initialize(); // start test-server
 
-    const response = await request(dev_endpoint, mutation, variables);
+it('Registering users test', async () => {
+    const response = await request(getAddress(), mutation, variables);
+
     // test endpoint data
     expect(response).toBeTruthy();
     expect(response.errors).toBeFalsy();
@@ -34,5 +42,6 @@ it('Runs a health to test registering users', async () => {
     expect(users).toHaveLength(1);
     expect(user.email).toEqual(email);
     expect(user.password).not.toEqual(password);
-    TestDataSource.destroy();
-})
+});
+
+// TODO: close whatever connection exists after jest test.
