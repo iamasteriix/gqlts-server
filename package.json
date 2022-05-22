@@ -6,7 +6,7 @@
    "type": "commonjs",
    "scripts": {
       "start": "nodemon --exec ts-node src/server.ts",
-      "test": "jest",
+      "test": "jest --config jest.config.ts",
       "generate-types": "graphql-codegen --config codegen.yml",
       "typeorm": "typeorm-ts-node-commonjs",
       "lint": "eslint -c .eslintrc.js --ext .ts src"

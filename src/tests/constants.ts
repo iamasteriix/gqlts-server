@@ -1,1 +1,1 @@
-export const devHost = `http://localhost:4000/`;
+export const dev_endpoint = `http://localhost:4000/`;
