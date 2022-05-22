@@ -2,9 +2,7 @@
 
 ### Dev logs
 
-- [x] figure out what the problem with testing is.
-- [ ] use a test database; drop before running new tests.
-- [x] figure out how port is suddenly still in use with nodemon.
+- [x] use a test database; drop before running new tests.
 - [x] get the apollo-server to work with Jest.
 
 

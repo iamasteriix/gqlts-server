@@ -3,7 +3,7 @@ import { loadSchema } from '@graphql-tools/load';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 
 import { resolvers } from './resolvers';
-import { AppDataSource } from './data-source';
+import { ServerDataSource } from './utils/selectConnection';
 
 
 async function main() {
@@ -19,7 +19,7 @@ async function main() {
   const server = new ApolloServer({ typeDefs, resolvers });
 
   // initialize database connection
-  await AppDataSource.initialize();
+  await ServerDataSource().initialize();
 
   // start server
   server.listen().then(({ url }) => {
