@@ -6,6 +6,7 @@ import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { join } from 'path';
 import { readdirSync } from 'fs';
 import { ServerDataSource } from './utils/selectConnection';
+import Redis = require('ioredis');
 
 
 /**
@@ -30,9 +31,20 @@ export default async function server() {
     const typeDefsWithResolvers = addResolversToSchema(typeDefs, resolvers);
     schemas.push(typeDefsWithResolvers);
   };
+
+  // initialize redis instance
+  const redis = new Redis();
   
   // initialize apollo-server with created schema
-  const server = new ApolloServer({ schema: mergeSchemas({ schemas }) });
+  const server = new ApolloServer({
+    schema: mergeSchemas({ schemas }),
+    context: ({ req }) => ({
+      redis,
+      url: req + '://' + req.get('host')
+    })
+  });
+
+  // TODO: confirm registration link and update database
 
   // initialize database connection
   await ServerDataSource().initialize();

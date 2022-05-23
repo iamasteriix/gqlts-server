@@ -3,6 +3,7 @@ import * as yup from 'yup';
 import { User } from '../../entity/User';
 import { ResolverMap } from '../../types/graphql-utils';
 import { MutationRegisterArgs } from '../../types/schema';
+import { confirmEmailLink } from '../../utils/confirmEmailLink';
 import { formatYupError } from '../../utils/formatYupError';
 import { errorMessages } from './constants';
 
@@ -15,7 +16,7 @@ const schema = yup.object().shape({
 
 export const resolvers: ResolverMap = {
     Mutation: {
-        register: async (_, args: MutationRegisterArgs) => {
+        register: async (_, args: MutationRegisterArgs, { redis, url }) => {
 
             // validate user signup input
             try {
@@ -42,10 +43,13 @@ export const resolvers: ResolverMap = {
 
             // add user email and password
             const hashedPassword = await bcrypt.hash(password, 2);
-            await User.create({
+            const user = await User.create({
                 email: email,
                 password: hashedPassword
             }).save();
+
+            const link = await confirmEmailLink(url, user.id, redis);
+
             return null
         }
     }
