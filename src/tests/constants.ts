@@ -1,1 +1,0 @@
-export const dev_endpoint = `http://localhost:4000/`;
