@@ -16,7 +16,10 @@ const email = "mario@mail.com";
 const password = "milk";
 const mutation = gql`
     mutation($input: CreateUserInput!) {
-        register(input: $input)
+        register(input: $input) {
+            path,
+            message
+        }
 }
 `;
 const variables = {
@@ -34,7 +37,7 @@ it('Registering users test', async () => {
     expect(response).toBeTruthy();
     expect(response.errors).toBeFalsy();
     expect(response).toHaveProperty('register');
-    expect(response.register).toEqual(true);
+    expect(response.register).toBe(null);
 
     // test data inserted into database
     const users = await User.find({ where: {email} });
@@ -42,6 +45,11 @@ it('Registering users test', async () => {
     expect(users).toHaveLength(1);
     expect(user.email).toEqual(email);
     expect(user.password).not.toEqual(password);
+
+    // test entering existing email
+    const response2 = await request(getAddress(), mutation, variables);
+    expect(response2.register).toHaveLength(1);
+    expect(response2.register[0].path).toEqual('email')
 });
 
 // TODO: close whatever connection exists after jest test.

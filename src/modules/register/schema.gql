@@ -1,7 +1,10 @@
+# import Error from '../../shared.gql'
+
 input CreateUserInput {
 	email: String!
 	password: String!
 }
+
 type Mutation {
-	register(input: CreateUserInput!): Boolean
+	register(input: CreateUserInput!): [Error!]
 }

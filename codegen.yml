@@ -1,5 +1,5 @@
 overwrite: true
-schema: "src/schema.gql"
+schema: "src/tmp.gql"
 documents: null
 generates:
   src/types/schema.d.ts:
