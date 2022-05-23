@@ -1,14 +1,30 @@
 import * as bcrypt from 'bcryptjs';
+import * as yup from 'yup';
 import { User } from '../../entity/User';
 import { ResolverMap } from '../../types/graphql-utils';
 import { MutationRegisterArgs } from '../../types/schema';
+import { formatYupError } from '../../utils/formatYupError';
+import { errorMessages } from './constants';
+
+
+const schema = yup.object().shape({
+    email: yup.string().min(5, errorMessages.emailNotLongEnough).max(255).email(),
+    password: yup.string().min(8).max(255)
+});
 
 
 export const resolvers: ResolverMap = {
     Mutation: {
         register: async (_, args: MutationRegisterArgs) => {
-            const userInput = args.input;
-            const email = userInput.email;
+
+            // validate user signup input
+            try {
+                await schema.validate(args.input, { abortEarly: false });
+            } catch (error) {
+                return formatYupError(error);
+            }
+
+            const { email, password } = args.input;
 
             // check if user already exists
             const userAlreadyExists = await User.findOne({
@@ -20,12 +36,12 @@ export const resolvers: ResolverMap = {
                 return [
                     {
                         path: 'email',
-                        message: 'already taken'
+                        message: errorMessages.duplicateEmail
                     }]
             }
 
             // add user email and password
-            const hashedPassword = await bcrypt.hash(userInput.password, 2);
+            const hashedPassword = await bcrypt.hash(password, 2);
             await User.create({
                 email: email,
                 password: hashedPassword

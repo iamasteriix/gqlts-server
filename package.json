@@ -21,6 +21,7 @@
       "@types/jest": "^27.5.1",
       "@types/node": "^16.11.10",
       "@types/uuid": "^8.3.4",
+      "@types/yup": "^0.29.14",
       "@typescript-eslint/eslint-plugin": "^5.25.0",
       "@typescript-eslint/parser": "^5.25.0",
       "eslint": "^8.15.0",
@@ -40,6 +41,7 @@
       "graphql": "^16.5.0",
       "pg": "^8.4.0",
       "reflect-metadata": "^0.1.13",
-      "typeorm": "0.3.6"
+      "typeorm": "0.3.6",
+      "yup": "^0.32.11"
    }
 }
