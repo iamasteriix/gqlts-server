@@ -1,4 +1,5 @@
 import { request, gql } from 'graphql-request';
+import { TestDataSource } from '../../data-source';
 import { User } from '../../entity/User';
 import server from '../../server';
 import { errorMessages } from './constants';
@@ -6,8 +7,12 @@ import { errorMessages } from './constants';
 
 let getUrl = () => '';
 beforeAll(async () => {
-    const server_info = await server();
-    getUrl = () => `${server_info.url}`;
+    const appInfo = await server();
+    getUrl = () => `${appInfo.url}`;
+});
+
+afterAll(() => {
+    TestDataSource.destroy();
 });
 
 

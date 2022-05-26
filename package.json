@@ -6,7 +6,7 @@
    "type": "commonjs",
    "scripts": {
       "start": "NODE_ENV=dev ts-node src/index.ts",
-      "test": "NODE_ENV=test jest --config jest.config.ts --detectOpenHandles --forceExit",
+      "test": "NODE_ENV=test jest --config jest.config.ts --forceExit",
       "generate-types": "graphql-codegen --config codegen.yml",
       "typeorm": "typeorm-ts-node-commonjs",
       "lint": "eslint -c .eslintrc.js --ext .ts src"
@@ -17,7 +17,6 @@
       "@graphql-codegen/typescript-document-nodes": "2.2.11",
       "@graphql-codegen/typescript-resolvers": "2.6.4",
       "@types/bcryptjs": "^2.4.2",
-      "@types/graphql": "^14.5.0",
       "@types/ioredis": "^4.28.10",
       "@types/jest": "^27.5.1",
       "@types/node": "^16.11.10",

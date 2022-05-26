@@ -1,23 +1,27 @@
 import { User } from '../entity/User';
 import Redis = require('ioredis');
 import { confirmEmailLink } from './confirmEmailLink';
+import { TestDataSource } from '../data-source';
 
-const endpoint = `http://localhost:4000/`;
+
+const redis = new Redis();
+const endpoint = `http://localhost:4000`;
 const email = 'user@mail.com';
 const password = 'smartPass';
 let userId: string;
 
 beforeAll(async () => {
+    await TestDataSource.initialize();
     const user = await User.create({ email, password }).save();
     userId = user.id;
 });
 
-test('Confirm email link works', async () => {
-    const redis = new Redis();
-    const confirmationUrl = await confirmEmailLink(endpoint, userId as string, redis);
-    const response = await fetch(confirmationUrl);
+afterAll(() => {
+    redis.disconnect();
+});
 
-    expect(response).toBeTruthy();
+test('Confirm email link works', async () => {
+    const confirmationUrl = await confirmEmailLink(endpoint, userId as string, redis);
 
     // not sure how else I would test for this link,
     // so I'll print it on the console so the 

@@ -3,7 +3,8 @@
 ### Dev logs
 
 - [x] start and test test-server with just `npm test`.
-- [ ] I need to destroy the database connection after running test server, or the server connection. I'm not sure which one.
+- [ ] I need to destroy the database connection after running test server.
+- [ ] create a simple mock front-end that allows users to confirm the email link so I can update registration information in the database.
 
 
 ## Useful resources
