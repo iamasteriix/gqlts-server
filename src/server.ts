@@ -40,7 +40,7 @@ export default async function server() {
     schema: mergeSchemas({ schemas }),
     context: ({ req }) => ({
       redis,
-      url: req + '://' + req.get('host')
+      url: req.protocol + '://' + req.get('host')
     })
   });
 

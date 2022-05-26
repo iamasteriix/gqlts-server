@@ -1,5 +1,3 @@
-/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
-
 import { Config } from '@jest/types';
 
 

@@ -1,1 +1,1 @@
-# Graphql-ts-server
+# Graphql-Typescript server

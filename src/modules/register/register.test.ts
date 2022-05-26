@@ -4,12 +4,10 @@ import server from '../../server';
 import { errorMessages } from './constants';
 
 
-let getAddress = () => '';
-
+let getUrl = () => '';
 beforeAll(async () => {
-    const app = await server();
-    const url = app.url;
-    getAddress = () => `${url}`
+    const server_info = await server();
+    getUrl = () => `${server_info.url}`;
 });
 
 
@@ -29,9 +27,9 @@ const variables_4 = { input: { email: 'email', password: 'pass' } };
 
 describe('Registering users test', () => {
     it("Test endpoint and user registration data", async () => {
-        const response_0 = await request(getAddress(), mutation, variables_1);
+        const response_0 = await request(getUrl(), mutation, variables_1);
 
-        // test endpoint data
+        // test getUrl() data
         expect(response_0).toBeTruthy();
         expect(response_0.errors).toBeFalsy();
         expect(response_0).toHaveProperty('register');
@@ -46,25 +44,25 @@ describe('Registering users test', () => {
     });
 
     it("Check for duplicate emails", async () => {
-        const response_1 = await request(getAddress(), mutation, variables_1);
+        const response_1 = await request(getUrl(), mutation, variables_1);
         expect(response_1.register).toHaveLength(1);
         expect(response_1.register[0]).toEqual({ path: 'email', message: errorMessages.duplicateEmail });
     });
     
     it("Check for bad email", async () => {
-        const response_2 = await request(getAddress(), mutation, variables_2);
+        const response_2 = await request(getUrl(), mutation, variables_2);
         expect(response_2.register).toHaveLength(1);
         expect(response_2.register[0]).toEqual({ path: 'email', message: errorMessages.badEmail });
     });
 
     it("Check for short password", async () => {
-        const response_3 = await request(getAddress(), mutation, variables_3);
+        const response_3 = await request(getUrl(), mutation, variables_3);
         expect(response_3.register).toHaveLength(1);
         expect(response_3.register[0]).toEqual({ path: 'password', message: errorMessages.shortPassword });
     });
 
     it("Check for bad email and short password", async () => {
-        const response_4 = await request(getAddress(), mutation, variables_4);
+        const response_4 = await request(getUrl(), mutation, variables_4);
         expect(response_4.register).toHaveLength(2);
     });
     
