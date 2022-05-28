@@ -1,5 +1,5 @@
 import { User } from '../entity/User';
-import Redis = require('ioredis');
+import Redis from 'ioredis';
 import { confirmEmailLink } from './confirmEmailLink';
 import { TestDataSource } from '../data-source';
 

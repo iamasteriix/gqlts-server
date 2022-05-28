@@ -6,7 +6,7 @@ import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { join } from 'path';
 import { readdirSync } from 'fs';
 import { ServerDataSource } from './utils/selectConnection';
-import Redis = require('ioredis');
+import Redis from 'ioredis';
 
 
 /**

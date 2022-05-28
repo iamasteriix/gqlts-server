@@ -1,4 +1,3 @@
-/*
 import server from "./server";
 
 module.exports = async () => {
@@ -6,4 +5,3 @@ module.exports = async () => {
     const url = app.url;
     process.env.TEST_URL = `${url}`;
 };
-*/
