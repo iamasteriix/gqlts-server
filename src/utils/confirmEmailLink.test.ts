@@ -17,6 +17,7 @@ beforeAll(async () => {
 });
 
 afterAll(() => {
+    TestDataSource.destroy();
     redis.disconnect();
 });
 
