@@ -1,7 +1,6 @@
 import { User } from '../entity/User';
 import { redis } from '../redis';
 import server from '../server';
-import { TestDataSource } from '../data-source';
 import fetch from 'cross-fetch';
 import { confirmEmailLink } from '../utils/confirmEmailLink';
 
@@ -10,7 +9,7 @@ const email = 'user@mail.com';
 const password = 'smartPass';
 let endpoint: string;
 let userId: string;
-const testDataSource = TestDataSource;
+let confirmationUrl: string;
 
 beforeAll(async () => {
     const serverInfo = await server();
@@ -18,16 +17,15 @@ beforeAll(async () => {
 
     const user = await User.create({ email, password }).save();
     userId = user.id;
+    confirmationUrl = await confirmEmailLink(endpoint, userId, redis);
 });
 
 afterAll(async () => {
-    testDataSource.destroy();
     redis.disconnect();
 });
 
 describe('Confirm email link works', () => {
     test('Test that it confirms user and deletes key in redis', async () => {
-        const confirmationUrl = await confirmEmailLink(endpoint, userId as string, redis);
         const response = await fetch(confirmationUrl);
         const text = await response.text();
     
@@ -38,8 +36,12 @@ describe('Confirm email link works', () => {
         expect(value).toBeNull();
     });
 
+    test('Test that user confirms email and is updated in the database', async () => {
+       const user = await User.findOne({ where: { id: userId } });
+       expect((user as User).confirmed).toBe(true);
+    });
+
     test('Test for invalid if id is resent', async () => {
-        const confirmationUrl = await confirmEmailLink(endpoint, userId as string, redis);
         const response = await fetch(confirmationUrl);
         const text = await response.text();
     
