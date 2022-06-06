@@ -1,44 +1,24 @@
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
-import { GraphQLSchema } from 'graphql';
-import { loadSchema } from '@graphql-tools/load';
-import { addResolversToSchema, mergeSchemas } from '@graphql-tools/schema';
-import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
-import { join } from 'path';
-import { readdirSync } from 'fs';
+import { genSchema } from './utils/genSchema';
 import { ServerDataSource } from './utils/selectConnection';
 import { redis } from './redis';
 import { confirmEmail } from './routes/confirmEmail';
 
 
 /**
- * This is the main method that retrieves the schema documents, adds
- * the type definitions, initializes the ApolloServer and Typeorm database
+ * This is the main method. It initializes the ApolloServer and Typeorm database
  * connection and runs the express server with all the routes.
  * 
  * @returns server address and the running data-source in a key-value object.
  */
 export default async function server() {
-  
-  // create schema
-  const schemas: GraphQLSchema[] = [];
-  const folders = readdirSync(join(__dirname, './modules'));
-
-  for (const folder of folders) {
-    const typeDefs = await loadSchema(`./modules/${folder}/schema.gql`, {
-      cwd: __dirname,
-      assumeValid: true,
-      assumeValidSDL: true,
-      loaders: [new GraphQLFileLoader()]
-    });
-    const { resolvers } = require(`./modules/${folder}/resolvers`);
-    const typeDefsWithResolvers = addResolversToSchema(typeDefs, resolvers);
-    schemas.push(typeDefsWithResolvers);
-  };
+  // get schema
+  const mergedSchema = await genSchema();
   
   // initialize apollo-server with created schema
   const server = new ApolloServer({
-    schema: mergeSchemas({ schemas }),
+    schema: mergedSchema,
     context: ({ req }) => ({
       redis,
       url: req.protocol + '://' + req.get('host')
