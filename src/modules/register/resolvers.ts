@@ -5,6 +5,7 @@ import { ResolverMap } from '../../types/graphql-utils';
 import { MutationRegisterArgs } from '../../types/schema';
 import { confirmEmailLink } from '../../utils/confirmEmailLink';
 import { formatYupError } from '../../utils/formatYupError';
+import { sendEmail } from '../../utils/sendEmail';
 import { errorMessages } from './constants';
 
 
@@ -48,8 +49,9 @@ export const resolvers: ResolverMap = {
                 password: hashedPassword
             }).save();
 
-            const link = await confirmEmailLink(url, user.id, redis);
-            console.log(link);
+            // send verification email
+            await sendEmail(email, await confirmEmailLink(url, user.id, redis));
+            
 
             return null;
         }

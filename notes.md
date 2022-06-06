@@ -3,6 +3,7 @@
 ### Dev logs
 
 - [ ] I need to destroy the database connection after running test server.
+- [ ] I need to use another mailing service for the email confirmation feature. I should check out mailchimp, or something.
 
 
 ## Useful resources
