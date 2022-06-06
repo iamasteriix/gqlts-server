@@ -13,8 +13,8 @@ let serverData: { url: string; runningDataSource: DataSource; };
 
 const beforeAllTests = async () => {
     const serverInfo = await server();
-    const url = serverInfo.serverData.url;
-    const runningDataSource = serverInfo.DataSource;
+    const url = serverInfo.url;
+    const runningDataSource = serverInfo.dataSource;
     return { url, runningDataSource };
 }
 

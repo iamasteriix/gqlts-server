@@ -8,7 +8,7 @@ let endpoint: string;
 
 beforeAll(async () => {
     const serverInfo = await server();
-    const url = serverInfo.url;
+    const url = serverInfo.graphqlPath;
     endpoint = `${url}`;
 });
 

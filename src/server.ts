@@ -49,7 +49,6 @@ export default async function server() {
   const DataSource = ServerDataSource();
   await DataSource.initialize();
 
-  // TODO: confirm registration link and update database
   // initialize express server
   const app = express();
 
@@ -64,7 +63,8 @@ export default async function server() {
   });
 
   return {
-    url: `http://localhost:${PORT}${server.graphqlPath}`,
+    graphqlPath: `http://localhost:${PORT}${server.graphqlPath}`,
+    url: `http://localhost:${PORT}`,
     dataSource: DataSource
   };
 }
