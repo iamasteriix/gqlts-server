@@ -1,4 +1,5 @@
-import { ApolloServer } from 'apollo-server';
+import { ApolloServer } from 'apollo-server-express';
+import express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { loadSchema } from '@graphql-tools/load';
 import { addResolversToSchema, mergeSchemas } from '@graphql-tools/schema';
@@ -6,13 +7,16 @@ import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { join } from 'path';
 import { readdirSync } from 'fs';
 import { ServerDataSource } from './utils/selectConnection';
-import Redis from 'ioredis';
+import { redis } from './redis';
+import { confirmEmail } from './routes/confirmEmail';
 
 
 /**
- * Main method that calls the schema and builds the apollo-server.
+ * This is the main method that retrieves the schema documents, adds
+ * the type definitions, initializes the ApolloServer and Typeorm database
+ * connection and runs the express server with all the routes.
  * 
- * @returns apollo-server app object.
+ * @returns server address and the running data-source in a key-value object.
  */
 export default async function server() {
   
@@ -31,9 +35,6 @@ export default async function server() {
     const typeDefsWithResolvers = addResolversToSchema(typeDefs, resolvers);
     schemas.push(typeDefsWithResolvers);
   };
-
-  // initialize redis instance
-  const redis = new Redis();
   
   // initialize apollo-server with created schema
   const server = new ApolloServer({
@@ -44,16 +45,26 @@ export default async function server() {
     })
   });
 
-  // TODO: confirm registration link and update database
-
   // initialize database connection
-  await ServerDataSource().initialize();
+  const DataSource = ServerDataSource();
+  await DataSource.initialize();
 
-  // start server
-  const app = await server.listen({
-    port: process.env.NODE_ENV === 'test' ? 4001 : 4000
+  // TODO: confirm registration link and update database
+  // initialize express server
+  const app = express();
+
+  app.get('/confirm/:id', confirmEmail);
+
+  await server.start();
+  server.applyMiddleware({ app });
+
+  const PORT = process.env.NODE_ENV === 'test' ? 4001 : 4000
+  app.listen(PORT, () => {
+    console.log(`🚀  Server ready at http://localhost:${PORT}${server.graphqlPath}`);
   });
-  console.log(`🚀  Server ready at ${app.url}`);
 
-  return app;
+  return {
+    url: `http://localhost:${PORT}${server.graphqlPath}`,
+    dataSource: DataSource
+  };
 }

@@ -48,8 +48,8 @@ export const resolvers: ResolverMap = {
                 password: hashedPassword
             }).save();
 
-            // const link =
-            await confirmEmailLink(url, user.id, redis);
+            const link = await confirmEmailLink(url, user.id, redis);
+            console.log(link);
 
             return null;
         }

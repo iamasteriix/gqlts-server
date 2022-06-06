@@ -2,9 +2,8 @@
 
 ### Dev logs
 
-- [x] start and test test-server with just `npm test`.
 - [ ] I need to destroy the database connection after running test server.
-- [ ] create a simple mock front-end that allows users to confirm the email link so I can update registration information in the database.
+- [x] This task was initially meant to tackle creating a mock front-end to test email confirmation. I solved it using express routing. 
 
 
 ## Useful resources
