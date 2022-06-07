@@ -7,7 +7,7 @@ import { errorMessages } from '../../constants';
 
 export const resolvers: ResolverMap = {
     Mutation: {
-        login: async (_, args: MutationLoginArgs) => {
+        login: async (_, args: MutationLoginArgs, { session }) => {
             const { email, password } = args.input;
             const invalidLoginResponse = [{
                 path: 'email',
@@ -29,6 +29,9 @@ export const resolvers: ResolverMap = {
             // verify correct password
             const validPassword = await bcrypt.compare(password, user.password);
             if (!validPassword) return invalidLoginResponse;
+
+            // login successful
+            session.userId = user.id;
 
             return null;
         }
