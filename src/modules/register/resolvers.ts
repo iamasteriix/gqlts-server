@@ -1,4 +1,3 @@
-import * as bcrypt from 'bcryptjs';
 import * as yup from 'yup';
 import { User } from '../../entity/User';
 import { ResolverMap } from '../../types/graphql-utils';
@@ -43,11 +42,7 @@ export const resolvers: ResolverMap = {
             }
 
             // add user email and password
-            const hashedPassword = await bcrypt.hash(password, 2);
-            const user = await User.create({
-                email: email,
-                password: hashedPassword
-            }).save();
+            const user = await User.create({ email, password }).save();
 
             // send verification email
             // await sendEmail(email, await confirmEmailLink(url, user.id, redis));
