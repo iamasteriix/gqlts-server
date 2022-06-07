@@ -35,9 +35,8 @@ export default async function server() {
   const DataSource = ServerDataSource();
   await DataSource.initialize();
 
-  // initialize express server
-  const app = express();
-  const RedisStore = connectRedis(session);
+  const app = express();  // initialize express server
+  const RedisStore = connectRedis(session); // initialize redis store for cookies
 
   app.get('/confirm/:id', confirmEmail);
   app.use(
@@ -51,7 +50,7 @@ export default async function server() {
       cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 1000 * 60 * 60 * 24 * 7   // 7 days
+        maxAge: 1000 * 60 * 60 * 24 * 7   // store cookie session for 7 days
       }
     })
   );

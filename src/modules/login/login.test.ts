@@ -44,13 +44,11 @@ describe('Login', () => {
         await User.update({ email: email }, { confirmed: true });
         const response = await request(endpoint, loginMutation, variables_03);
         expect(response.login[0].message).toBe(errorMessages.invalidLogin);
-        // TODO: if next test is not implementing correctly then neither is this one.
     });
 
     it('Test successful login', async () => {
         await User.update({ email: email }, { confirmed: true });
-        const user = await User.findOne({ where: { email } });
-        // TODO: Test for successful login
-        console.log(user);
+        const response = await request(endpoint, loginMutation, variables_02);
+        expect(response.login).toBeNull();
     });
 });
