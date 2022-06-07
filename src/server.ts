@@ -60,12 +60,12 @@ export default async function server() {
 
   const PORT = process.env.NODE_ENV === 'test' ? 4001 : 4000;
   app.listen(PORT, () => {
-    console.log(`🚀  Server ready at http://localhost:${PORT}${server.graphqlPath}`);
+    console.log(`🚀  Server ready at http://localhost:${PORT}${server.graphqlPath}/`);
   });
 
   return {
     graphqlPath: `http://localhost:${PORT}${server.graphqlPath}/`,
-    url: `http://localhost:${PORT}`,
+    url: `http://localhost:${PORT}/`,
     dataSource: DataSource
   };
 }
