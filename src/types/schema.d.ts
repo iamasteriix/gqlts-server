@@ -15,11 +15,6 @@ export type Scalars = {
   Float: number;
 };
 
-export type CreateUserInput = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
 export type Error = {
   __typename?: 'Error';
   message: Scalars['String'];
@@ -28,12 +23,18 @@ export type Error = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  login?: Maybe<Array<Error>>;
   register?: Maybe<Array<Error>>;
 };
 
 
+export type MutationLoginArgs = {
+  input: UserInput;
+};
+
+
 export type MutationRegisterArgs = {
-  input: CreateUserInput;
+  input: UserInput;
 };
 
 export type Query = {
@@ -44,6 +45,11 @@ export type Query = {
 
 export type QueryHelloArgs = {
   name?: InputMaybe<Scalars['String']>;
+};
+
+export type UserInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
 };
 
 
@@ -116,21 +122,21 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  CreateUserInput: CreateUserInput;
   Error: ResolverTypeWrapper<Error>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  UserInput: UserInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
-  CreateUserInput: CreateUserInput;
   Error: Error;
   Mutation: {};
   Query: {};
   String: Scalars['String'];
+  UserInput: UserInput;
 };
 
 export type ErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['Error'] = ResolversParentTypes['Error']> = {
@@ -140,6 +146,7 @@ export type ErrorResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  login?: Resolver<Maybe<Array<ResolversTypes['Error']>>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
   register?: Resolver<Maybe<Array<ResolversTypes['Error']>>, ParentType, ContextType, RequireFields<MutationRegisterArgs, 'input'>>;
 };
 

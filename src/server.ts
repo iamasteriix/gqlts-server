@@ -43,7 +43,7 @@ export default async function server() {
   });
 
   return {
-    graphqlPath: `http://localhost:${PORT}${server.graphqlPath}`,
+    graphqlPath: `http://localhost:${PORT}${server.graphqlPath}/`,
     url: `http://localhost:${PORT}`,
     dataSource: DataSource
   };

@@ -1,7 +1,7 @@
 import { request, gql } from 'graphql-request';
 import { User } from '../../entity/User';
 import server from '../../server';
-import { errorMessages } from './constants';
+import { errorMessages } from '../../constants';
 
 
 let endpoint: string;
@@ -15,7 +15,7 @@ beforeAll(async () => {
 const email = 'mario@mail.com';
 const password = "rick_roll";
 const mutation = gql`
-    mutation($input: CreateUserInput!) {
+    mutation($input: UserInput!) {
         register(input: $input) {
             path,
             message

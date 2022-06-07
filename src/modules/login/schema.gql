@@ -6,5 +6,5 @@ input UserInput {
 }
 
 type Mutation {
-	register(input: UserInput!): [Error!]
+	login(input: UserInput!): [Error!]
 }

@@ -5,13 +5,13 @@ import { ResolverMap } from '../../types/graphql-utils';
 import { MutationRegisterArgs } from '../../types/schema';
 import { confirmEmailLink } from '../../utils/confirmEmailLink';
 import { formatYupError } from '../../utils/formatYupError';
-import { sendEmail } from '../../utils/sendEmail';
-import { errorMessages } from './constants';
+// import { sendEmail } from '../../utils/sendEmail';
+import { errorMessages } from '../../constants';
 
 
 const schema = yup.object().shape({
-    email: yup.string().min(5, errorMessages.emailNotLongEnough).max(255).email(),
-    password: yup.string().min(8).max(255)
+    email: yup.string().min(5, errorMessages.emailNotLongEnough).max(255).email().required(),
+    password: yup.string().min(8).max(255).required()
 });
 
 
@@ -50,8 +50,8 @@ export const resolvers: ResolverMap = {
             }).save();
 
             // send verification email
-            await sendEmail(email, await confirmEmailLink(url, user.id, redis));
-            
+            // await sendEmail(email, await confirmEmailLink(url, user.id, redis));
+            await confirmEmailLink(url, user.id, redis)            
 
             return null;
         }
