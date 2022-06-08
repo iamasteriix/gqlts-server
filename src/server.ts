@@ -19,9 +19,6 @@ import { confirmEmail } from './routes/confirmEmail';
  */
 export default async function server() {
 
-  // get schema
-  const mergedSchema = await genSchema();
-
   // initialize database connection
   const DataSource = ServerDataSource();
   await DataSource.initialize();
@@ -46,6 +43,9 @@ export default async function server() {
   );
 
   app.get('/confirm/:id', confirmEmail);
+
+  // get schema
+  const mergedSchema = await genSchema();
 
   // initialize apollo-server with created schema
   const server = new ApolloServer({

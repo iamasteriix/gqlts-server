@@ -4,7 +4,7 @@ import { ResolverMap } from '../../../types/graphql-utils';
 import { MutationRegisterArgs } from '../../../types/schema';
 import { confirmEmailLink } from '../../../utils/confirmEmailLink';
 import { formatYupError } from '../../../utils/formatYupError';
-// import { sendEmail } from '../../utils/sendEmail';
+import { sendEmail } from '../../../utils/sendEmail/sendEmail';
 import { errorMessages } from '../../constants';
 
 
@@ -45,8 +45,8 @@ export const resolvers: ResolverMap = {
             const user = await User.create({ email, password }).save();
 
             // send verification email
-            // await sendEmail(email, await confirmEmailLink(url, user.id, redis));
-            await confirmEmailLink(url, user.id, redis)            
+            const link = await confirmEmailLink(url, user.id, redis)
+            await sendEmail('niftylettuce@gmail.com', 'mytdriacfhoapalqee@nthrl.com', link); 
 
             return null;
         }
