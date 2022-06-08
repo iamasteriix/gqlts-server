@@ -1,7 +1,7 @@
 import { request, gql } from 'graphql-request';
 import { errorMessages } from '../../constants';
-import { User } from '../../entity/User';
-import server from '../../server';
+import { User } from '../../../entity/User';
+import server from '../../../server';
 
 
 beforeAll(async () => {

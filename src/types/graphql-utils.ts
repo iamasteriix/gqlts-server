@@ -1,10 +1,11 @@
-import { Redis } from "ioredis";
-
 /**
  * custom resolver type definition for registration resolver
- * currently used in resolvers.ts
+ * currently used in all resolvers.ts
  */
- export interface Session {
+
+import { Redis } from "ioredis";
+
+export interface Session { // need to extend Express session.
     userId?: string;
 }
 

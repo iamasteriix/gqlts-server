@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcryptjs';
-import { User } from '../../entity/User';
-import { ResolverMap } from '../../types/graphql-utils';
-import { MutationLoginArgs } from '../../types/schema';
+import { User } from '../../../entity/User';
+import { ResolverMap } from '../../../types/graphql-utils';
+import { MutationLoginArgs } from '../../../types/schema';
 import { errorMessages } from '../../constants';
 
 

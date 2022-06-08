@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import session from 'express-session';
@@ -20,16 +21,6 @@ export default async function server() {
 
   // get schema
   const mergedSchema = await genSchema();
-  
-  // initialize apollo-server with created schema
-  const server = new ApolloServer({
-    schema: mergedSchema,
-    context: ({ req }) => ({
-      redis,
-      url: req.protocol + '://' + req.get('host'),
-      session: req.session
-    })
-  });
 
   // initialize database connection
   const DataSource = ServerDataSource();
@@ -37,8 +28,7 @@ export default async function server() {
 
   const app = express();  // initialize express server
   const RedisStore = connectRedis(session); // initialize redis store for cookies
-
-  app.get('/confirm/:id', confirmEmail);
+  
   app.use(
     cors(),
     session({
@@ -55,6 +45,18 @@ export default async function server() {
     })
   );
 
+  app.get('/confirm/:id', confirmEmail);
+
+  // initialize apollo-server with created schema
+  const server = new ApolloServer({
+    schema: mergedSchema,
+    context: ({ req }) => ({
+      redis,
+      url: req.protocol + '://' + req.get('host'),
+      session: req.session
+    })
+  });
+
   await server.start();
   server.applyMiddleware({ app });
 
@@ -65,7 +67,7 @@ export default async function server() {
 
   return {
     graphqlPath: `http://localhost:${PORT}${server.graphqlPath}/`,
-    url: `http://localhost:${PORT}/`,
+    url: `http://localhost:${PORT}`,
     dataSource: DataSource
   };
 }

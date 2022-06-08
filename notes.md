@@ -1,9 +1,16 @@
 # Notes
 
-### Dev logs
+### TODO
 
-- [ ] I need to destroy the database connection after running test server.
-- [ ] I need to use another mailing service for the email confirmation feature. I should check out mailchimp, or something.
+- [ ] Need to destroy the database connection after running test server.
+- [ ] Need to use another mailing service for the email confirmation feature. I should check out mailchimp, or something.
+
+
+### Notes
+
+- Currently, we are not logging in the user using `axios`. Not quite sure how to sort that out, but at least I found what the issue was.
+- The query should not return anything if the user is not registered.
+- It seems to be the case that the session data does not persist.
 
 
 ## Useful resources

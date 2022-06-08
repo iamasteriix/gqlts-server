@@ -1,6 +1,6 @@
 import { request, gql } from 'graphql-request';
-import { User } from '../../entity/User';
-import server from '../../server';
+import { User } from '../../../entity/User';
+import server from '../../../server';
 import { errorMessages } from '../../constants';
 
 
