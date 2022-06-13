@@ -4,6 +4,11 @@ import { User } from '../../../entity/User';
 import server from '../../../server';
 
 
+let endpoint: string;
+let user: User;
+const email = 'mario@mail.com';
+const password = "whatever";
+
 beforeAll(async () => {
     const serverInfo = await server();
     const url = serverInfo.graphqlPath;
@@ -11,10 +16,6 @@ beforeAll(async () => {
     user = await User.create({ email, password }).save(); // create user
 });
 
-let endpoint: string;
-let user: User;
-const email = 'mario@mail.com';
-const password = "whatever";
 const loginMutation = gql`
     mutation($input: UserInput!) {
         login(input: $input) {
