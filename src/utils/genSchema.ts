@@ -14,16 +14,16 @@ import { join } from "path";
 export const genSchema = async () => {
   // create schema
   const schemas: GraphQLSchema[] = [];
-  const folders = readdirSync(join(__dirname, '../modules/User'));
+  const folders = readdirSync(join(__dirname, '../modules/user'));
 
   for (const folder of folders) {
-    const typeDefs = await loadSchema(`../modules/User/${folder}/schema.gql`, {
+    const typeDefs = await loadSchema(`../modules/user/${folder}/schema.gql`, {
       cwd: __dirname,
       assumeValid: true,
       assumeValidSDL: true,
       loaders: [new GraphQLFileLoader()]
     });
-    const { resolvers } = require(`../modules/User/${folder}/resolvers`);
+    const { resolvers } = require(`../modules/user/${folder}/resolvers`);
     const typeDefsWithResolvers = addResolversToSchema(typeDefs, resolvers);
     schemas.push(typeDefsWithResolvers);
   };

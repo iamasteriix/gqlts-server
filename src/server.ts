@@ -3,12 +3,12 @@ import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import session from 'express-session';
-import cors from 'cors';
 import connectRedis from 'connect-redis';
 import { genSchema } from './utils/genSchema';
 import { ServerDataSource } from './utils/selectConnection';
 import { redis } from './redis';
-import { confirmEmail } from './routes/confirmEmail';
+import { confirmEmail } from './routes/confirmEmail/confirmEmail';
+import cors from 'cors';
 
 
 /**
@@ -22,6 +22,16 @@ export default async function server() {
   // initialize database connection
   const DataSource = ServerDataSource();
   await DataSource.initialize();
+
+  // initialize apollo-server with created schema
+  const server = new ApolloServer({
+    schema: await genSchema(),
+    context: ({ req }) => ({
+      redis,
+      url: req.protocol + '://' + req.get('host'),
+      session: req.session
+    })
+  });
 
   const app = express();  // initialize express server
   const RedisStore = connectRedis(session); // initialize redis store for cookies
@@ -43,19 +53,6 @@ export default async function server() {
   );
 
   app.get('/confirm/:id', confirmEmail);
-
-  // get schema
-  const mergedSchema = await genSchema();
-
-  // initialize apollo-server with created schema
-  const server = new ApolloServer({
-    schema: mergedSchema,
-    context: ({ req }) => ({
-      redis,
-      url: req.protocol + '://' + req.get('host'),
-      session: req.session
-    })
-  });
 
   await server.start();
   server.applyMiddleware({ app });

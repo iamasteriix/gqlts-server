@@ -1,8 +1,8 @@
-import { User } from '../entity/User';
-import { redis } from '../redis';
-import server from '../server';
+import { User } from '../../entity/User';
+import { redis } from '../../redis';
+import server from '../../server';
 import fetch from 'cross-fetch';
-import { confirmEmailLink } from '../utils/confirmEmailLink';
+import { confirmEmailLink } from '../../utils/createConfirmEmailLink';
 
 
 const email = 'user@mail.com';

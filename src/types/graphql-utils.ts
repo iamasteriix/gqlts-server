@@ -3,25 +3,33 @@
  * currently used in all resolvers.ts
  */
 
+import session from "express-session";
 import { Redis } from "ioredis";
 
-export interface Session { // need to extend Express session.
+
+export interface Session extends session.Session {
     userId?: string;
+}
+
+export interface Context {
+    redis: Redis;
+    url: string;
+    session: Session;
 }
 
 export type Resolver = (
     parent: any,
     args: any,
-    context: { redis: Redis, url: string, session: Session },
+    context: Context,
     info: any) => any;
-
+ 
 export type GraphqlMiddlewareFunction = (
     resolver: Resolver,
     parent: any,
     args: any,
-    context: { redis: Redis, url: string, session: Session },
+    context: Context,
     info: any) => any;
-
+ 
 export interface ResolverMap {
     [key: string]: {
         [key: string]: Resolver;

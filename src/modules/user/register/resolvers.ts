@@ -2,9 +2,9 @@ import * as yup from 'yup';
 import { User } from '../../../entity/User';
 import { ResolverMap } from '../../../types/graphql-utils';
 import { MutationRegisterArgs } from '../../../types/schema';
-import { confirmEmailLink } from '../../../utils/confirmEmailLink';
+import { confirmEmailLink } from '../../../utils/createConfirmEmailLink';
 import { formatYupError } from '../../../utils/formatYupError';
-import { sendEmail } from '../../../utils/sendEmail/sendEmail';
+import { sendEmail } from '../../../routes/sendEmail/sendEmail';
 import { errorMessages } from '../../constants';
 
 
@@ -46,7 +46,7 @@ export const resolvers: ResolverMap = {
 
             // send verification email
             const link = await confirmEmailLink(url, user.id, redis)
-            await sendEmail('niftylettuce@gmail.com', 'mytdriacfhoapalqee@nthrl.com', link); 
+            await sendEmail('niftylettuce@yahoo.com', email, link);
 
             return null;
         }

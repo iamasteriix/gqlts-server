@@ -4,6 +4,13 @@ import { User } from '../../../entity/User';
 import server from '../../../server';
 
 
+let userId: string;
+const email = 'user@mail.com';
+const password = 'smartPass';
+const confirmed = true;
+let endpoint: string;
+let user: User;
+
 beforeAll(async () => {
     const serverInfo = await server();
     endpoint = `${serverInfo.graphqlPath}`;
@@ -11,12 +18,6 @@ beforeAll(async () => {
     userId = user.id;
 });
 
-let userId: string;
-const email = 'user@mail.com';
-const password = 'smartPass';
-const confirmed = false;
-let endpoint: string;
-let user: User;
 const loggedInUserQuery = gql`
     query {
         person { email, id }
@@ -32,16 +33,16 @@ describe('Person', () => {
     });
 
     it('Test get current user', async () => {
-        const axiosResponse = await axios.post(
+        const response = await axios.post(
             endpoint,
             { query: loggedInUserQuery },
             { withCredentials: true }
         );
 
-        expect(axiosResponse).toHaveProperty('data');
-        expect(axiosResponse.data).toHaveProperty('data');
-        expect(axiosResponse.data.data).toHaveProperty('person');
-        expect(axiosResponse.data.data.person.email).toBe(email);
-        expect(axiosResponse.data.data.person.id).toBe(userId);
+        expect(response).toHaveProperty('data');
+        expect(response.data).toHaveProperty('data');
+        expect(response.data.data).toHaveProperty('person');
+        expect(response.data.data.person.email).toBe(email);
+        expect(response.data.data.person.id).toBe(userId);
     });
 });
