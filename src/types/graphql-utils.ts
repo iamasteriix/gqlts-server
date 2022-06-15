@@ -3,11 +3,11 @@
  * currently used in all resolvers.ts
  */
 
-import session from "express-session";
+import { Request } from "express";
 import { Redis } from "ioredis";
 
 
-export interface Session extends session.Session {
+export interface Session extends Request {
     userId?: string;
 }
 
@@ -15,6 +15,7 @@ export interface Context {
     redis: Redis;
     url: string;
     session: Session;
+    request: Request
 }
 
 export type Resolver = (

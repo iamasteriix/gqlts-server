@@ -1,14 +1,15 @@
 import 'dotenv/config';
 import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server-express';
+import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import express from 'express';
 import session from 'express-session';
+import http from 'http';
 import connectRedis from 'connect-redis';
 import { genSchema } from './utils/genSchema';
 import { ServerDataSource } from './utils/selectConnection';
-import { redis } from './redis';
+import { redis, sessionPrefices } from './redis';
 import { confirmEmail } from './routes/confirmEmail/confirmEmail';
-import cors from 'cors';
 
 
 /**
@@ -19,34 +20,32 @@ import cors from 'cors';
  */
 export default async function server() {
 
-  // initialize database connection
+  const isProduction = process.env.NODE_ENV === 'production';
+  const PORT = process.env.NODE_ENV === 'test' ? 4001 : 4000;
+  const app = express();
+  const httpServer = http.createServer(app);
+  const RedisStore = connectRedis(session);
   const DataSource = ServerDataSource();
-  await DataSource.initialize();
 
-  // initialize apollo-server with created schema
-  const server = new ApolloServer({
-    schema: await genSchema(),
-    context: ({ req }) => ({
-      redis,
-      url: req.protocol + '://' + req.get('host'),
-      session: req.session
-    })
-  });
-
-  const app = express();  // initialize express server
-  const RedisStore = connectRedis(session); // initialize redis store for cookies
+  if (!isProduction) {
+    app.set('trust proxy', true);
+    console.log('set trust proxy for development environment.');
+  }
   
   app.use(
-    cors(),
     session({
+      store: new RedisStore({
+        client: redis,
+        prefix: sessionPrefices.redisSessionPrefix
+      }),
       name: 'gqlts-id',
-      store: new RedisStore({ client: redis }),
       secret: process.env.SESSION_SECRET as string,
       resave: false,
-      saveUninitialized: true,
+      saveUninitialized: false,
       cookie: {
+        sameSite: 'none',
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: isProduction,
         maxAge: 1000 * 60 * 60 * 24 * 7   // store cookie session for 7 days
       }
     })
@@ -54,13 +53,26 @@ export default async function server() {
 
   app.get('/confirm/:id', confirmEmail);
 
+  const server = new ApolloServer({
+    schema: await genSchema(),
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    context: ({ req }) => ({
+      redis,
+      url: req.protocol + '://' + req.get('host'),
+      session: req.session,
+      request: req
+    })
+  });
+
+  await DataSource.initialize();
   await server.start();
   server.applyMiddleware({ app });
 
-  const PORT = process.env.NODE_ENV === 'test' ? 4001 : 4000;
-  app.listen(PORT, () => {
-    console.log(`🚀  Server ready at http://localhost:${PORT}${server.graphqlPath}/`);
-  });
+  await new Promise<void>(resolve =>
+    httpServer.listen({ port: PORT }, resolve)
+  );
+
+  console.log(`🚀  Server ready at http://localhost:${PORT}${server.graphqlPath}/`);
 
   return {
     graphqlPath: `http://localhost:${PORT}${server.graphqlPath}/`,

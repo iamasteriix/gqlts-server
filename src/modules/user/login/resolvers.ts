@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import { User } from '../../../entity/User';
+import { sessionPrefices } from '../../../redis';
 import { ResolverMap } from '../../../types/graphql-utils';
 import { MutationLoginArgs } from '../../../types/schema';
 import { errorMessages } from '../../constants';
@@ -7,7 +8,7 @@ import { errorMessages } from '../../constants';
 
 export const resolvers: ResolverMap = {
     Mutation: {
-        login: async (_, args: MutationLoginArgs, { session }) => {
+        login: async (_, args: MutationLoginArgs, { redis, session, request }) => {
             const { email, password } = args.input;
             const invalidLoginResponse = [{
                 path: 'email',
@@ -32,6 +33,7 @@ export const resolvers: ResolverMap = {
 
             // login successful
             session.userId = user.id;
+            if (request.sessionID) redis.lpush(`${sessionPrefices.redisSessionPrefix}${user.id}`, request.sessionID);
 
             return null;
         }

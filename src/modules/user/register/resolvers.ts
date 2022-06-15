@@ -45,7 +45,7 @@ export const resolvers: ResolverMap = {
             const user = await User.create({ email, password }).save();
 
             // send verification email
-            const link = await confirmEmailLink(url, user.id, redis)
+            const link = await confirmEmailLink(url, user.id, redis);
             await sendEmail('niftylettuce@yahoo.com', email, link);
 
             return null;
