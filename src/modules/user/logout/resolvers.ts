@@ -3,17 +3,24 @@ import { ResolverMap } from "../../../types/graphql-utils";
 
 
 export const resolvers: ResolverMap = {
-    Mutation: {
-        logout: async (_, __, { redis, session }) => {
-            const userId = session.userId;
+  Mutation: {
+    logout: async (_, __, { redis, session }) => {
+      const userId = session.userId;
+      const redisPfx = sessionPrefices.redisSessionPrefix;
+      const userSessKey = `${sessionPrefices.userSessionPrefix}${userId}`;
 
-            if (userId) {
-                const sessionIds = await redis.lrange(`${sessionPrefices.userSessionPrefix}${userId}`, 0, -1);
-                
-                for (const id of sessionIds) await redis.del(`${sessionPrefices.redisSessionPrefix}${id}`);
-                return true;
-            }
-            return false;
-        }
+      if (userId) {
+        const sessionIds = await redis.lrange(userSessKey, 0, -1);
+        const promiseToDel: Promise<number>[] = [];
+
+        for (const id of sessionIds)
+          promiseToDel.push(redis.del(`${redisPfx}${id}`));
+
+        await Promise.all(promiseToDel);      
+        await redis.del(userSessKey);
+        return true;
+      }
+      return false;
     }
+  }
 }

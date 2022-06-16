@@ -2,6 +2,7 @@ import { request, gql } from 'graphql-request';
 import { errorMessages } from '../../constants';
 import { User } from '../../../entity/User';
 import server from '../../../server';
+import { TestClient } from '../../../utils/TestClient';
 
 
 let endpoint: string;
@@ -51,5 +52,15 @@ describe('Login', () => {
         await User.update({ email: email }, { confirmed: true });
         const response = await request(endpoint, loginMutation, variables_02);
         expect(response.login).toBeNull();
+    });
+
+    it('Test logging into multiple sessions', async () => {
+      const sess1 = new TestClient(endpoint);
+      const sess2 = new TestClient(endpoint);
+      await sess1.login();
+      await sess2.login();
+      const personSess1 = await sess1.person();
+      const personSess2 = await sess2.person();
+      expect(personSess1.data.data).toEqual(personSess2.data.data);
     });
 });

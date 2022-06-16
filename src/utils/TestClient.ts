@@ -70,5 +70,3 @@ export class TestClient {
     )
   }
 }
-
-// TODO: implement cookie jar that stores axios response cookies.
