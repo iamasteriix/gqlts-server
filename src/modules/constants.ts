@@ -4,7 +4,8 @@ const errorMessages = {
     badEmail: 'email must be a valid email',
     shortPassword: 'password must be at least 8 characters',
     invalidLogin: 'invalid login',
-    emailNotConfirmed: 'please confirm your email'
+    emailNotConfirmed: 'please confirm your email',
+    forgotPasswordLockedError: 'account is locked'
 }
 
 

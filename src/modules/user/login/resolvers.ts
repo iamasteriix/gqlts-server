@@ -27,6 +27,14 @@ export const resolvers: ResolverMap = {
                 }];
             }
 
+            // check if account is locked
+            if (!user.forgotPasswordLocked) {
+              return [{
+                path: 'email',
+                message: errorMessages.forgotPasswordLockedError
+              }]
+            }
+
             // verify correct password
             const validPassword = await bcrypt.compare(password, user.password);
             if (!validPassword) return invalidLoginResponse;
