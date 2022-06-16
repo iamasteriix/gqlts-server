@@ -1,10 +1,12 @@
-import { request, gql } from 'graphql-request';
 import { User } from '../../../entity/User';
 import server from '../../../server';
+import { TestClient } from '../../../utils/TestClient';
 import { errorMessages } from '../../constants';
 
 
 let endpoint: string;
+const email = 'mario@mail.com';
+const password = 'whatever';
 
 beforeAll(async () => {
     const serverInfo = await server();
@@ -12,61 +14,52 @@ beforeAll(async () => {
     endpoint = `${url}`;
 });
 
-const email = 'mario@mail.com';
-const password = "rick_roll";
-const mutation = gql`
-    mutation($input: UserInput!) {
-        register(input: $input) {
-            path,
-            message
-        }
-    }`;
-const variables_1 = { input: { email: email, password: password } };
-const variables_2 = { input: { email: 'em_com', password: password } };
-const variables_3 = { input: { email: email, password: 'long' } };
-const variables_4 = { input: { email: 'email', password: 'pass' } };
+const gotResponse = (response: any, len: number, path: string, msg: string) => {
+  expect(response).toBeTruthy();
+  expect(response.errors).toBeFalsy();
+  expect(response).toHaveProperty('register');
+  if (len === 0) expect(response.register).toBe(null);
+  if (path && msg) expect(response.register[0]).toEqual({ path: path, message: msg });
+}
 
 describe('Registering users test', () => {
-    it("Test endpoint and user registration data", async () => {
-        const response_0 = await request(endpoint, mutation, variables_1);
+  it('Test endpoint as string data', async () => {
+    const client = new TestClient(endpoint);
+    const response = await client.register(email, password);
+    gotResponse(response, 0, '', '');
+  });
 
-        // test endpoint as string data
-        expect(response_0).toBeTruthy();
-        expect(response_0.errors).toBeFalsy();
-        expect(response_0).toHaveProperty('register');
-        expect(response_0.register).toBe(null);
+  it('Test user registration input data', async () => {
+    const users = await User.find({ where: { email } });
+    const user = users[0];
+    expect(users).toHaveLength(1);
+    expect(user.email).toEqual(email);
+    expect(user.password).not.toEqual(password);
+  });
 
-        // test user registration input data
-        const users = await User.find({ where: { email } });
-        const user = users[0];
-        expect(users).toHaveLength(1);
-        expect(user.email).toEqual(email);
-        expect(user.password).not.toEqual(password);
-    });
-
-    it("Check for duplicate emails", async () => {
-        const response_1 = await request(endpoint, mutation, variables_1);
-        expect(response_1.register).toHaveLength(1);
-        expect(response_1.register[0]).toEqual({ path: 'email', message: errorMessages.duplicateEmail });
-    });
+  it("Check for duplicate emails", async () => {
+    const client = new TestClient(endpoint);
+    const response = await client.register(email, password);
+    gotResponse(response, 1, 'email', errorMessages.duplicateEmail);
+  });
     
-    it("Check for bad email", async () => {
-        const response_2 = await request(endpoint, mutation, variables_2);
-        expect(response_2.register).toHaveLength(1);
-        expect(response_2.register[0]).toEqual({ path: 'email', message: errorMessages.badEmail });
-    });
+  it("Check for bad email", async () => {
+    const client = new TestClient(endpoint);
+    const response = await client.register('em_com', password);
+    gotResponse(response, 1, 'email', errorMessages.badEmail);
+  });
 
-    it("Check for short password", async () => {
-        const response_3 = await request(endpoint, mutation, variables_3);
-        expect(response_3.register).toHaveLength(1);
-        expect(response_3.register[0]).toEqual({ path: 'password', message: errorMessages.shortPassword });
-    });
+  it("Check for short password", async () => {
+    const client = new TestClient(endpoint);
+    const response = await client.register(email, 'long');
+    gotResponse(response, 1, 'password', errorMessages.shortPassword);
+  });
 
-    it("Check for bad email and short password", async () => {
-        const response_4 = await request(endpoint, mutation, variables_4);
-        expect(response_4.register).toHaveLength(2);
-    });
-    
+  it("Check for bad email and short password", async () => {
+    const client = new TestClient(endpoint);
+    const response = await client.register('email', 'pass');
+    gotResponse(response, 2, '', '');
+  });
 });
 
 // TODO: close whatever connection exists after jest test.

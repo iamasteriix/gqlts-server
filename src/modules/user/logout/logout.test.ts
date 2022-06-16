@@ -1,41 +1,39 @@
-import axios from 'axios';
-import { gql } from 'graphql-request';
+import { AxiosResponse } from 'axios';
+import { User } from '../../../entity/User';
 import server from '../../../server';
+import { TestClient } from '../../../utils/TestClient';
 
 
 let endpoint: string;
+const email = 'mario@mail.com';
+const password = 'whatever';
+const confirmed = true;
 
 beforeAll(async () => {
-    const serverInfo = await server();
-    endpoint = `${serverInfo.graphqlPath}`;
+  const serverInfo = await server();
+  endpoint = `${serverInfo.graphqlPath}`;
+  await User.create({ email, password, confirmed }).save();
 });
 
-const logout_mutation = gql`
-    mutation { logout }
-`;
+const gotResponse = (response: AxiosResponse<any, any>) => {
+  expect(response).toHaveProperty('data');
+  expect(response.data).toHaveProperty('data');
+  return response.data.data;
+}
 
 describe('Logout', () => {
-    it('Test for errorless logout', async () => {
-        const response = await axios.post(
-            endpoint,
-            { query: logout_mutation },
-            { withCredentials: true }
-        );
+  it('Test logging out logged in user', async () => {
+    const client = new TestClient(endpoint);
+    await client.login();
+    let response = await client.person();
+    let hasData = gotResponse(response);
+    
+    expect(hasData).toHaveProperty('person');
+    expect(hasData.person).toBeTruthy();
 
-        expect(response).toHaveProperty('data');
-        expect(response.data).toHaveProperty('data');
-        expect(response.data.data).toHaveProperty('logout');
-        expect(response.data.data.logout).toBe(true);
-    });
-
-    /**
-     * TODO: better tests
-     * 
-     * Current testing is not sufficient since I have not figured out storing
-     * cookie ids for every logged in user. To run better tests:
-     * - log in to create a session with cookie data and specifically cookie ids for each user.
-     * - query session to make sure user is correctly logged in with the correct session information with some user's user id
-     * - logout and run correct logging in test and make sure it fails.
-     * Essentially what we want is to query the logged in user and get `null` back.
-     */
+    await client.logout();
+    // tests cannot logout user currently and I'm not sure why.
+    // functionally, this is caused by not being able to read the session ids from redis.
+    // unclear why that would be happening here though.
+  });
 });

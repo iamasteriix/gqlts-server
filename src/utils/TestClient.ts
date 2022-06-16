@@ -1,43 +1,74 @@
 import axios from 'axios';
+import { request, gql } from 'graphql-request';
 
 
 export class TestClient {
-    url: string;
-    jar: any;
-    options: {
-        method: string,
-        url: string;
-        withCredentials: boolean;
-        // jar: any
+  input: {
+    email: string,
+    password: string
+  };
+  endpoint: string;
+  loginMutation: string;
+  logoutMutation: string;
+  personQuery: string;
+
+  constructor(url: string) {
+    this.endpoint = url;
+  }
+
+  async register(email: string, password: string){
+    const variables = {
+      input: { email, password }
     }
 
-    constructor(url: string) {
-        this.url = url;
-        this.options = {
-            method: 'post',
-            url: this.url,
-            withCredentials: true
-        }
+    const mutation = gql`
+    mutation($input: UserInput!) {
+        register(input: $input) {
+            path,
+            message
+        }}`;
+
+    return await request(this.endpoint, mutation, variables);
+  }
+
+  async login() {
+    this.loginMutation = gql`
+      mutation {
+        login(input: {
+          email: "mario@mail.com",
+          password: "whatever"
+          })
+          { path, message }}`;
+
+    return await axios.post(
+      this.endpoint,
+        { query: this.loginMutation },
+        { withCredentials: true }
+      );
     }
 
-    async login(email: string, password: string) {
-        return axios({
-            ...this.options,
-            data: { query: { email, password } } // temporary
-        });
+  async person() {
+    this.personQuery = gql`
+      query {
+        person { id, email } }`;
+
+    return await axios.post(
+      this.endpoint,
+        { query: this.personQuery },
+        { withCredentials: true }
+      );
     }
 
-    async person() {
-        return axios({
-            ...this.options,
-            data: { query: 'placeholder' } // temporary
-        });
-    }
+  async logout() {
+    this.logoutMutation = gql`
+      mutation { logout }`;
 
-    async logout() {
-        return axios({
-            ...this.options,
-            data: { query: 'placeholder' } // temporary
-        });
-    }
+    return await axios.post(
+      this.endpoint,
+      { query: this.logoutMutation },
+      { withCredentials: true }
+    )
+  }
 }
+
+// TODO: implement cookie jar that stores axios response cookies.

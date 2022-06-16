@@ -10,6 +10,7 @@ import { genSchema } from './utils/genSchema';
 import { ServerDataSource } from './utils/selectConnection';
 import { redis, sessionPrefices } from './redis';
 import { confirmEmail } from './routes/confirmEmail/confirmEmail';
+import cors from 'cors';
 
 
 /**
@@ -50,6 +51,8 @@ export default async function server() {
       }
     })
   );
+
+  app.use(cors());
 
   app.get('/confirm/:id', confirmEmail);
 

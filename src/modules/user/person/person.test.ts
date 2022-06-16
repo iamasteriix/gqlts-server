@@ -1,7 +1,7 @@
-import axios from 'axios';
-import { gql } from 'graphql-request';
+import { AxiosResponse } from 'axios';
 import { User } from '../../../entity/User';
 import server from '../../../server';
+import { TestClient } from '../../../utils/TestClient';
 
 
 let userId: string;
@@ -18,31 +18,27 @@ beforeAll(async () => {
     userId = user.id;
 });
 
-const loggedInUserQuery = gql`
-    query {
-        person { email, id }
-        }`;
+const gotResponse = (response: AxiosResponse<any, any>) => {
+  expect(response).toHaveProperty('data');
+  expect(response.data).toHaveProperty('data');
+  return response.data.data;
+}
 
 describe('Person', () => {
-    it('Test cannot get user if they are not logged in', async () => {
-        // TODO: test for no cookie response if user is not logged in.
-    });
+  it('Test cannot get user if they are not logged in', async () => {
+    // TODO: test for no cookie response if user is not logged in.
+  });
 
-    it('Test null if no cookies', async () => {
-        // TODO: test null if no cookies.
-    });
+  it('Test null if no cookies', async () => {
+    // TODO: test null if no cookies.
+  });
 
-    it('Test get current user', async () => {
-        const response = await axios.post(
-            endpoint,
-            { query: loggedInUserQuery },
-            { withCredentials: true }
-        );
-
-        expect(response).toHaveProperty('data');
-        expect(response.data).toHaveProperty('data');
-        expect(response.data.data).toHaveProperty('person');
-        expect(response.data.data.person.email).toBe(email);
-        expect(response.data.data.person.id).toBe(userId);
-    });
+  it('Test get current user', async () => {
+    const client = new TestClient(endpoint);
+    let response = await client.person();
+    let hasData = gotResponse(response);
+    expect(hasData).toHaveProperty('person');
+    expect(hasData.person.email).toBe(email);
+    expect(hasData.person.id).toBe(userId);
+  });
 });
