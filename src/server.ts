@@ -8,7 +8,7 @@ import http from 'http';
 import connectRedis from 'connect-redis';
 import { genSchema } from './utils/genSchema';
 import { ServerDataSource } from './utils/selectConnection';
-import { redis, sessionPrefices } from './redis';
+import { redis, redisPrefices } from './redis';
 import { confirmEmail } from './routes/confirmEmail/confirmEmail';
 import cors from 'cors';
 
@@ -37,7 +37,7 @@ export default async function server() {
     session({
       store: new RedisStore({
         client: redis,
-        prefix: sessionPrefices.redisSessionPrefix
+        prefix: redisPrefices.redisSessionPrefix
       }),
       name: 'gqlts-id',
       secret: process.env.SESSION_SECRET as string,

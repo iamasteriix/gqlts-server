@@ -2,7 +2,7 @@ import * as yup from 'yup';
 import { User } from '../../../entity/User';
 import { ResolverMap } from '../../../types/graphql-utils';
 import { MutationRegisterArgs } from '../../../types/schema';
-import { confirmEmailLink } from '../../../utils/createConfirmEmailLink';
+import { confirmEmailLink } from '../../../utils/createLinks';
 import { formatYupError } from '../../../utils/formatYupError';
 import { sendEmail } from '../../../routes/sendEmail/sendEmail';
 import { errorMessages } from '../../constants';

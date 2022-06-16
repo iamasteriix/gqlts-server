@@ -4,7 +4,8 @@ import Redis from 'ioredis';
 export const redis = new Redis();
 
 // redis session prefices.
-export const sessionPrefices = {
+export const redisPrefices = {
     redisSessionPrefix: 'sess:',
-    userSessionPrefix: 'userSessIds:'
+    userSessionPrefix: 'userSessIds:',
+    forgotPassword: 'forgotPassword:'
 }

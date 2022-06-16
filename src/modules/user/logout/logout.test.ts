@@ -24,7 +24,7 @@ const gotResponse = (response: AxiosResponse<any, any>) => {
 describe('Logout', () => {
   it('Test logging out logged in user', async () => {
     const client = new TestClient(endpoint);
-    await client.login();
+    await client.login(email, password);
     let response = await client.person();
     let hasData = gotResponse(response);
     
@@ -40,8 +40,8 @@ describe('Logout', () => {
   it('Test logging out multiple sessions', async () => {
     const sess1 = new TestClient(endpoint);
     const sess2 = new TestClient(endpoint);
-    await sess1.login();
-    await sess2.login();
+    await sess1.login(email, password);
+    await sess2.login(email, password);
     const personSess1 = await sess1.person();
     const personSess2 = await sess2.person();
     expect(personSess1.data.data).toEqual(personSess2.data.data);

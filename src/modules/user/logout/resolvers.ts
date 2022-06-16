@@ -1,4 +1,4 @@
-import { sessionPrefices } from "../../../redis";
+import { redisPrefices } from "../../../redis";
 import { ResolverMap } from "../../../types/graphql-utils";
 
 
@@ -6,8 +6,8 @@ export const resolvers: ResolverMap = {
   Mutation: {
     logout: async (_, __, { redis, session }) => {
       const userId = session.userId;
-      const redisPfx = sessionPrefices.redisSessionPrefix;
-      const userSessKey = `${sessionPrefices.userSessionPrefix}${userId}`;
+      const redisPfx = redisPrefices.redisSessionPrefix;
+      const userSessKey = `${redisPrefices.userSessionPrefix}${userId}`;
 
       if (userId) {
         const sessionIds = await redis.lrange(userSessKey, 0, -1);

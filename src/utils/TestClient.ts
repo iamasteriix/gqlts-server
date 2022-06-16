@@ -3,14 +3,7 @@ import { request, gql } from 'graphql-request';
 
 
 export class TestClient {
-  input: {
-    email: string,
-    password: string
-  };
   endpoint: string;
-  loginMutation: string;
-  logoutMutation: string;
-  personQuery: string;
 
   constructor(url: string) {
     this.endpoint = url;
@@ -31,41 +24,57 @@ export class TestClient {
     return await request(this.endpoint, mutation, variables);
   }
 
-  async login() {
-    this.loginMutation = gql`
+  async login(email: string, password: string) {
+    const loginMutation = gql`
       mutation {
         login(input: {
-          email: "mario@mail.com",
-          password: "whatever"
+          email: "${email}",
+          password: "${password}"
           })
           { path, message }}`;
 
     return await axios.post(
       this.endpoint,
-        { query: this.loginMutation },
+        { query: loginMutation },
         { withCredentials: true }
       );
     }
 
   async person() {
-    this.personQuery = gql`
+    const personQuery = gql`
       query {
         person { id, email } }`;
 
     return await axios.post(
       this.endpoint,
-        { query: this.personQuery },
+        { query: personQuery },
         { withCredentials: true }
       );
     }
 
   async logout() {
-    this.logoutMutation = gql`
+    const logoutMutation = gql`
       mutation { logout }`;
 
     return await axios.post(
       this.endpoint,
-      { query: this.logoutMutation },
+      { query: logoutMutation },
+      { withCredentials: true }
+    )
+  }
+
+  async forgotPasswordChangeIt(newPassword: string, key: string){
+    const changePasswordMutation = gql`
+      mutation {
+        forgotPasswordChangeIt(input: {
+          newPassword: "${newPassword}",
+          key: "${key}"
+        })
+        { path, message }}`;
+
+    return await axios.post(
+      this.endpoint,
+      { query: changePasswordMutation },
       { withCredentials: true }
     )
   }

@@ -2,7 +2,7 @@ import { User } from '../../entity/User';
 import { redis } from '../../redis';
 import server from '../../server';
 import fetch from 'cross-fetch';
-import { confirmEmailLink } from '../../utils/createConfirmEmailLink';
+import { confirmEmailLink } from '../../utils/createLinks';
 
 
 const email = 'user@mail.com';

@@ -5,6 +5,7 @@
 - [ ] Need to destroy the database connection after running test server.
 - [x] Need to use another mailing service for the email confirmation feature. I should check out mailchimp, or something.
 - [x] Implement cookie jar that stores axios response cookies. Fixed: This seem to already exist in axios.
+- [ ] Send 'Change password' email.
 
 
 ### Notes
