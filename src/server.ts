@@ -1,14 +1,16 @@
 import 'dotenv/config';
 import 'reflect-metadata';
+import http from 'http';
+import express from 'express';
+import cors from 'cors';
 import { ApolloServer } from 'apollo-server-express';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
-import express from 'express';
-import http from 'http';
+import { auth } from 'express-openid-connect';
 import { genSchema } from './utils/genSchema';
 import { ServerDataSource } from './utils/selectConnection';
 import { changePassword, confirmEmail } from './routes/emailCallbacks';
-import cors from 'cors';
-import { contextArgs, isProduction, limiter, sessionOptions } from './utils/serverConfigs';
+import { authConfig, contextArgs, isProduction, limiter, sessionOptions } from './utils/serverConfigs';
+import { isAuthenticated } from './routes/auth';
 
 
 /**
@@ -32,7 +34,9 @@ export default async function server() {
   app.use(cors());
   app.use(limiter);
   app.use(sessionOptions);
+  app.use(auth(authConfig));
 
+  app.get('/', isAuthenticated);
   app.get('/confirm/:id', confirmEmail);
   app.get('/change-password/:id', changePassword)
 

@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
@@ -44,4 +45,13 @@ export const contextArgs: object | ContextFunction<ExpressContext, object> | und
   url: req.protocol + '://' + req.get('host'),
   session: req.session,
   request: req
-})
+});
+
+export const authConfig = {
+  authRequired: false,
+  auth0Logout: true,
+  secret: process.env.AUTH0_SECRET as string,
+  baseURL: 'http://localhost:4000',
+  clientID: process.env.CLIENT_ID as string,
+  issuerBaseURL: process.env.ISSUER_BASE_URL as string
+};

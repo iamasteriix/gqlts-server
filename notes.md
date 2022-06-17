@@ -22,3 +22,4 @@
 1. [Graphql code generator](https://www.graphql-code-generator.com/docs/config-reference/codegen-config) with `codegen`.
 1. [Nodemailer](https://nodemailer.com/about/) documentation.
 1. How to [use GraphQL with Postman](https://www.apollographql.com/blog/tooling/graphql-ide/how-to-use-graphql-with-postman/).
+1. Authentication examples with Auth0's [`express-openid-connect`](https://github.com/auth0/express-openid-connect/blob/master/EXAMPLES.md).
