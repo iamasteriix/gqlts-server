@@ -28,7 +28,7 @@ export const resolvers: ResolverMap = {
             }
 
             // check if account is locked
-            if (!user.forgotPasswordLocked) {
+            if (user.accountLocked) {
               return [{
                 path: 'email',
                 message: errorMessages.forgotPasswordLockedError

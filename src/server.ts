@@ -3,14 +3,12 @@ import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server-express';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import express from 'express';
-import session from 'express-session';
 import http from 'http';
-import connectRedis from 'connect-redis';
 import { genSchema } from './utils/genSchema';
 import { ServerDataSource } from './utils/selectConnection';
-import { redis, redisPrefices } from './redis';
 import { changePassword, confirmEmail } from './routes/emailCallbacks';
 import cors from 'cors';
+import { contextArgs, isProduction, limiter, sessionOptions } from './utils/serverConfigs';
 
 
 /**
@@ -21,11 +19,9 @@ import cors from 'cors';
  */
 export default async function server() {
 
-  const isProduction = process.env.NODE_ENV === 'production';
   const PORT = process.env.NODE_ENV === 'test' ? 4001 : 4000;
   const app = express();
   const httpServer = http.createServer(app);
-  const RedisStore = connectRedis(session);
   const DataSource = ServerDataSource();
 
   if (!isProduction) {
@@ -33,26 +29,9 @@ export default async function server() {
     console.log('set trust proxy for development environment.');
   }
   
-  app.use(
-    session({
-      store: new RedisStore({
-        client: redis,
-        prefix: redisPrefices.redisSessionPrefix
-      }),
-      name: 'gqlts-id',
-      secret: process.env.SESSION_SECRET as string,
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        sameSite: 'none',
-        httpOnly: true,
-        secure: isProduction,
-        maxAge: 1000 * 60 * 60 * 24 * 7   // store cookie session for 7 days
-      }
-    })
-  );
-
   app.use(cors());
+  app.use(limiter);
+  app.use(sessionOptions);
 
   app.get('/confirm/:id', confirmEmail);
   app.get('/change-password/:id', changePassword)
@@ -60,12 +39,7 @@ export default async function server() {
   const server = new ApolloServer({
     schema: await genSchema(),
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-    context: ({ req }) => ({
-      redis,
-      url: req.protocol + '://' + req.get('host'),
-      session: req.session,
-      request: req
-    })
+    context: contextArgs
   });
 
   await DataSource.initialize();

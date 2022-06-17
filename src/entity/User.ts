@@ -16,7 +16,7 @@ export class User extends BaseEntity {
   confirmed: boolean
 
   @Column('boolean', { default: false })
-  forgotPasswordLocked: boolean
+  accountLocked: boolean
 
   @BeforeInsert()
   async hashPasswordBeforeInsert() {

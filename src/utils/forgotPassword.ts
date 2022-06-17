@@ -12,6 +12,6 @@ import { deleteUserSessions } from "./deleteSessions";
  * @param redis redis instance.
  */
 export const forgotPasswordLockAccount = async (userId: string, redis: Redis) => {
-  await User.update({ id: userId }, { forgotPasswordLocked: true });
+  await User.update({ id: userId }, { accountLocked: true });
   await deleteUserSessions(userId, redis);
 }

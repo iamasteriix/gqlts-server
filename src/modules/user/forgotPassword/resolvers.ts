@@ -50,7 +50,7 @@ export const resolvers: ResolverMap = {
       await User.update(
         {id: userId },
         {
-          forgotPasswordLocked: false,
+          accountLocked: false,
           password: await bcrypt.hash(newPassword, 2)
         });
 
