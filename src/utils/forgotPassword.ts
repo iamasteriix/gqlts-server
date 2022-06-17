@@ -1,6 +1,6 @@
 import { Redis } from "ioredis";
-import { User } from "../../entity/User";
-import { deleteUserSessions } from "../deleteSessions";
+import { User } from "../entity/User";
+import { deleteUserSessions } from "./deleteSessions";
 
 
 /**

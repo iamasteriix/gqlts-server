@@ -9,7 +9,7 @@ import connectRedis from 'connect-redis';
 import { genSchema } from './utils/genSchema';
 import { ServerDataSource } from './utils/selectConnection';
 import { redis, redisPrefices } from './redis';
-import { confirmEmail } from './routes/confirmEmail/confirmEmail';
+import { changePassword, confirmEmail } from './routes/emailCallbacks';
 import cors from 'cors';
 
 
@@ -55,6 +55,7 @@ export default async function server() {
   app.use(cors());
 
   app.get('/confirm/:id', confirmEmail);
+  app.get('/change-password/:id', changePassword)
 
   const server = new ApolloServer({
     schema: await genSchema(),

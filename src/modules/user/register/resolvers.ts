@@ -1,17 +1,11 @@
-import * as yup from 'yup';
 import { User } from '../../../entity/User';
 import { ResolverMap } from '../../../types/graphql-utils';
 import { MutationRegisterArgs } from '../../../types/schema';
 import { confirmEmailLink } from '../../../utils/createLinks';
 import { formatYupError } from '../../../utils/formatYupError';
-import { sendEmail } from '../../../routes/sendEmail/sendEmail';
-import { errorMessages } from '../../constants';
-
-
-const schema = yup.object().shape({
-    email: yup.string().min(5, errorMessages.emailNotLongEnough).max(255).email().required(),
-    password: yup.string().min(8).max(255).required()
-});
+import { signingUp } from '../../../routes/views/htmlTemplates';
+import { sendEmail } from '../../../utils/sendEmail';
+import { errorMessages, yupSchema } from '../../constants';
 
 
 export const resolvers: ResolverMap = {
@@ -20,7 +14,7 @@ export const resolvers: ResolverMap = {
 
             // validate user signup input
             try {
-                await schema.validate(args.input, { abortEarly: false });
+                await yupSchema.validate(args.input, { abortEarly: false });
             } catch (error) {
                 return formatYupError(error);
             }
@@ -46,7 +40,7 @@ export const resolvers: ResolverMap = {
 
             // send verification email
             const link = await confirmEmailLink(url, user.id, redis);
-            await sendEmail('niftylettuce@yahoo.com', email, link);
+            await sendEmail(email, 'Hello there, welcome to Pug!', signingUp(link));
 
             return null;
         }
