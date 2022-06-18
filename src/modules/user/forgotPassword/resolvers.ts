@@ -4,13 +4,43 @@ import { User } from "../../../entity/User";
 import { redisPrefices } from "../../../redis";
 import { ResolverMap } from "../../../types/graphql-utils";
 import { MutationForgotPasswordChangeItArgs, MutationSendForgotPasswordEmailArgs } from "../../../types/schema";
-import { forgotPasswordLink } from "../../../utils/createLinks";
 import { formatYupError } from '../../../utils/formatYupError';
-import { forgotPasswordLockAccount } from "../../../utils/forgotPassword";
 import { errorMessages, yupPassword } from "../../constants";
 import { sendEmail } from '../../../utils/sendEmail';
 import { resetPasswordLink } from '../../../routes/views/htmlTemplates';
+import { v4 as uuidv4 } from 'uuid';
+import { Redis } from 'ioredis';
+import { deleteUserSessions } from '../../../utils/deleteSessions';
 
+
+/**
+ * This function uses the user's id from the database to create a temporary id on redis
+ * and subsequently, a link that redirects to a route where the user can update and confirm
+ * their new password.
+ * 
+ * @param url the website's base url.
+ * @param userId the user Id from the database.
+ * @param redis a redis instance.
+ * @returns a link that redirects to a route where the user can update their password.
+ */
+const forgotPasswordLink = async (url: string, userId: string, redis: Redis) => {
+  const id = uuidv4();
+  await redis.set(`${redisPrefices.forgotPassword}${id}`, userId, 'ex', 60*10);
+  return `${url}/change-password/${id}`;
+}
+
+/**
+ * Here we update the database so we can use the `forgotPasswordLocked` column to
+ * block any login attempts by the user with the same password.
+ * Then we delete all the running sessions on redis so the account is locked.
+ * 
+ * @param userId user's `id` in the postgres database
+ * @param redis redis instance.
+ */
+const forgotPasswordLockAccount = async (userId: string, redis: Redis) => {
+  await User.update({ id: userId }, { accountLocked: true });
+  await deleteUserSessions(userId, redis);
+}
 
 export const resolvers: ResolverMap = {
   Mutation: {

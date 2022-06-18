@@ -12,6 +12,7 @@
       "lint": "eslint -c .eslintrc.js --ext .ts src"
    },
    "devDependencies": {
+      "@faker-js/faker": "^7.2.0",
       "@graphql-codegen/cli": "2.6.2",
       "@graphql-codegen/typescript": "2.4.11",
       "@graphql-codegen/typescript-document-nodes": "2.2.11",
