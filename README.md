@@ -48,14 +48,14 @@ compiling and running Typescript.
 
 The test suite is not the most robust (I apologize), and perhaps the biggest problem is that I have not been able to run the 
 tests in parallel. This forces us to run the tests individually. Currently, the test suite contains tests for each folder inside
-the*user* module (besides the inconsequential *tempdir*), and one inside routes. Running `npm test <dir-with-test>` should pass.
+the *user* module (besides the inconsequential *tempdir*), and one inside routes. Running `npm test <dir-with-test>` should pass.
 I would appreciate improvements on the test suite.
 
 About the problem with testing, all(?) tests require starting a connection to some temporary postgres database instance, and each
 one of them drops this instance before running the tests. This is obviously a problem, because if one test drops the database for
 a test that is already running, all subsequent test cases will fail.
 
-I am not sure how I can fix this, and any contributions/advice will be appreciated.
+I am not sure how I should fix this, and any contributions/advice will be appreciated.
 
 
 
@@ -70,10 +70,11 @@ git clone https://github.com/iamasteriix/gqlts-server.git server
 It will create a directory named *server* with all the files in it. You can follow the steps in
 [Getting started](https://github.com/iamasteriix/gqlts-server/blob/main/README.md#getting-started).
 
-You might need to move a few files from this project around and perhaps delete some so you can maintain the integrity of the
-overall structure of your project. The most significant one of these is the *tsconfig.json* file, which you are advised to move
-to your root directory, then extend its base settings to the local (as in the server's own) *tsconfig.json* as of Typescript 2.1.
-For example, you could have the base tsconfig file as
+You might need to move a few files from this project around and perhaps delete some to maintain the integrity of the overall
+structure of your project. The most significant one of these is the *tsconfig.json* file, which you are advised to move to your
+root directory, then extend its base settings to the local (as in the server's own) *tsconfig.json* as of Typescript 2.1. For
+example:
+*base.json*
 ```
 {
   "compilerOptions": {
@@ -87,7 +88,7 @@ For example, you could have the base tsconfig file as
 }
 ```
 
-then set the local *tsconfig.json* to be
+*server/tsconfig.json*
 ```
 {
   "extends": "../base.json",
@@ -100,12 +101,13 @@ then set the local *tsconfig.json* to be
 You can find more information about Typescript's `extends` from the
 [documentation](https://www.typescriptlang.org/tsconfig/extends.html).
 
-If you are experiencing any problems, check out the issues on the issues tab above.
+If you are experiencing any problems, check out the issues on the [Issues](https://github.com/iamasteriix/gqlts-server/issues)
+tab above.
 
 #### Sending emails
 
-Under development, the emails are supposed to be sent to whatever address you add, but `nodemailer` allows you to preview the
-template by printing a string to the console. Following this link will allow you to 'test-confirm' user registration.
+Under development, the emails are supposed to be sent to whatever address 'the user' adds, but `nodemailer` allows you to preview
+the template by printing a string to the console. Following this link will allow you to 'test-confirm' user registration.
 
 
 
