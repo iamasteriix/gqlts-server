@@ -19,7 +19,7 @@ import { Redis } from 'ioredis';
  * @param redis a redis instance.
  * @returns a link that informs the server to update the database `confirmed` registration status.
  */
-const confirmEmailLink = async (url: string, userId: string, redis: Redis) => {
+export const confirmEmailLink = async (url: string, userId: string, redis: Redis) => {
   const id = uuidv4();
   await redis.set(id, userId, 'ex', 60*10); // set id to expire after 10 minutes
   return `${url}/confirm/${id}`;
