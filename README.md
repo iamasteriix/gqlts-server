@@ -74,12 +74,13 @@ Optionally, you can also add the project as a submodule using
 ```
 git submodule add https://github.com/iamasteriix/gqlts-server.git server
 ```
-Other instructions for using this as a submodule can be found in this [submodule documentation](https://devconnected.com/how-to-add-and-update-git-submodules/).
+More instructions for using this as a submodule can be found in this [submodule documentation](https://devconnected.com/how-to-add-and-update-git-submodules/).
 
-You might need to move a few files from this project around and perhaps delete some to maintain the integrity of the overall
-structure of your project. The most significant one of these is the *tsconfig.json* file, which you are advised to move to your
-root directory, then extend its base settings to the local (as in the server's own) *tsconfig.json* as of Typescript 2.1. For
-example:
+You might need to move a few files from this project around and perhaps delete others to maintain the integrity of the overall
+structure of your project. Arguably the most significant one of these is the *tsconfig.json* file, which you are advised to move
+to your root directory, then extend its base settings to the local (as in the server's own) *tsconfig.json* as of Typescript 2.1.
+For example:
+
 *base.json*
 ```
 {
@@ -133,5 +134,5 @@ If you would like to submit a PR with a fix, reference the issue you created!
 different project by fixing a few things, but so much had changed in the few years since it was last updated I figured it'd be
 worth the shot to rebuild it from scratch.
 
-- A few things I'm thinking of adding or updating are included in the my
+- A few things I'm thinking of adding or updating are included in my
 [notes](https://github.com/iamasteriix/gqlts-server/blob/main/notes.md).
