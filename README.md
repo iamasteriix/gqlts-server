@@ -48,7 +48,7 @@ compiling and running Typescript.
 
 The test suite is not the most robust (I apologize), and perhaps the biggest problem is that I have not been able to run the 
 tests in parallel. This forces us to run the tests individually. Currently, the test suite contains tests for each folder inside
-the *user* module (besides the inconsequential *tempdir*), and one inside routes. Running `npm test <dir-with-test>` should pass.
+the *user* module (besides the inconsequential *tempdir*), and one inside *routes*. Running `npm test <dir-with-test>` should pass.
 I would appreciate improvements on the test suite.
 
 About the problem with testing, all(?) tests require starting a connection to some temporary postgres database instance, and each
@@ -67,8 +67,14 @@ end, navigate into your project's *root* or *packages* directory and run
 ```
 git clone https://github.com/iamasteriix/gqlts-server.git server
 ```
-It will create a directory named *server* with all the files in it. You can follow the steps in
+It will create a directory named *server* with all the files in it. Subsequently, follow the steps in
 [Getting started](https://github.com/iamasteriix/gqlts-server/blob/main/README.md#getting-started).
+
+Optionally, you can also add the project as a submodule using
+```
+git submodule add https://github.com/iamasteriix/gqlts-server.git server
+```
+Other instructions for using this as a submodule can be found in this [submodule documentation](https://devconnected.com/how-to-add-and-update-git-submodules/).
 
 You might need to move a few files from this project around and perhaps delete some to maintain the integrity of the overall
 structure of your project. The most significant one of these is the *tsconfig.json* file, which you are advised to move to your
