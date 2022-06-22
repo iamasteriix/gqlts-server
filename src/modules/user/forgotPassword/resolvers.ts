@@ -8,26 +8,10 @@ import { formatYupError } from '../../../utils/formatYupError';
 import { errorMessages, yupPassword } from "../../constants";
 import { sendEmail } from '../../../utils/sendEmail';
 import { resetPasswordLink } from '../../../routes/views/htmlTemplates';
-import { v4 as uuidv4 } from 'uuid';
 import { Redis } from 'ioredis';
 import { deleteUserSessions } from '../../../utils/deleteSessions';
+import { forgotPasswordLink } from '../../../utils/createLinks';
 
-
-/**
- * This function uses the user's id from the database to create a temporary id on redis
- * and subsequently, a link that redirects to a route where the user can update and confirm
- * their new password.
- * 
- * @param url the website's base url.
- * @param userId the user Id from the database.
- * @param redis a redis instance.
- * @returns a link that redirects to a route where the user can update their password.
- */
-const forgotPasswordLink = async (url: string, userId: string, redis: Redis) => {
-  const id = uuidv4();
-  await redis.set(`${redisPrefices.forgotPassword}${id}`, userId, 'ex', 60*10);
-  return `${url}/change-password/${id}`;
-}
 
 /**
  * Here we update the database so we can use the `forgotPasswordLocked` column to

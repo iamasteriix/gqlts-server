@@ -5,7 +5,7 @@ export const redis = new Redis();
 
 // redis session prefices.
 export const redisPrefices = {
-    redisSessionPrefix: 'sess:',
-    userSessionPrefix: 'userSessIds:',
-    forgotPassword: 'forgotPassword:'
+  redisSessionPrefix: 'sess:',
+  userSessionPrefix: 'userSessIds:',
+  forgotPassword: 'forgotPassword:'
 }

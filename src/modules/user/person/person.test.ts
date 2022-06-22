@@ -12,10 +12,10 @@ let endpoint: string;
 let user: User;
 
 beforeAll(async () => {
-    const serverInfo = await server();
-    endpoint = `${serverInfo.graphqlPath}`;
-    user = await User.create({ email, password, confirmed }).save();
-    userId = user.id;
+  const serverInfo = await server();
+  endpoint = `${serverInfo.graphqlPath}`;
+  user = await User.create({ email, password, confirmed }).save();
+  userId = user.id;
 });
 
 const gotResponse = (response: AxiosResponse<any, any>) => {

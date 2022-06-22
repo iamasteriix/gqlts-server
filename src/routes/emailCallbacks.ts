@@ -5,16 +5,16 @@ import { redisPrefices } from '../redis';
 
 
 export const confirmEmail = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const userId = await redis.get(id);
+  const { id } = req.params;
+  const userId = await redis.get(id);
 
-    if (userId) {
-        await User.update({ id: userId }, { confirmed: true });
-        await redis.del(id);
-        res.send('Email confirmed!');
-    } else {
-        res.send('Invalid');
-    }
+  if (userId) {
+    await User.update({ id: userId }, { confirmed: true });
+    await redis.del(id);
+    res.send('Email confirmed!');
+  } else {
+    res.send('Invalid');
+  }
 }
 
 export const changePassword = async (req: Request, res: Response) => {

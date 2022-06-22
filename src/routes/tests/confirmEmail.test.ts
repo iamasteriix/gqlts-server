@@ -2,7 +2,7 @@ import { User } from '../../entity/User';
 import { redis } from '../../redis';
 import server from '../../server';
 import fetch from 'cross-fetch';
-import { confirmEmailLink } from '../../modules/user/register/resolvers';
+import { confirmEmailLink } from '../../utils/createLinks';
 
 
 const email = 'user@mail.com';
@@ -12,39 +12,39 @@ let userId: string;
 let confirmationUrl: string;
 
 beforeAll(async () => {
-    const serverInfo = await server();
-    endpoint = `${serverInfo.url}`;
+  const serverInfo = await server();
+  endpoint = `${serverInfo.url}`;
 
-    const user = await User.create({ email, password }).save();
-    userId = user.id;
-    confirmationUrl = await confirmEmailLink(endpoint, userId, redis);
+  const user = await User.create({ email, password }).save();
+  userId = user.id;
+  confirmationUrl = await confirmEmailLink(endpoint, userId, redis);
 });
 
 afterAll(async () => {
-    redis.disconnect();
+  redis.disconnect();
 });
 
 describe('Confirm email link works', () => {
-    test('Test that it confirms user and deletes key in redis', async () => {
-        const response = await fetch(confirmationUrl);
-        const text = await response.text();
-    
-        expect(text).toBe('Email confirmed!');
-    
-        const key = confirmationUrl.split('/').pop();
-        const value = await redis.get(key as KeyType);
-        expect(value).toBeNull();
-    });
+  test('Test that it confirms user and deletes key in redis', async () => {
+    const response = await fetch(confirmationUrl);
+    const text = await response.text();
 
-    test('Test that user confirms email and is updated in the database', async () => {
-       const user = await User.findOne({ where: { id: userId } });
-       expect((user as User).confirmed).toBe(true);
-    });
+    expect(text).toBe('Email confirmed!');
 
-    test('Test for invalid if id is resent', async () => {
-        const response = await fetch(confirmationUrl);
-        const text = await response.text();
-    
-        expect(text).toBe('Invalid');
-    });
+    const key = confirmationUrl.split('/').pop();
+    const value = await redis.get(key as KeyType);
+    expect(value).toBeNull();
+  });
+
+  test('Test that user confirms email and is updated in the database', async () => {
+    const user = await User.findOne({ where: { id: userId } });
+    expect((user as User).confirmed).toBe(true);
+  });
+
+  test('Test for invalid if id is resent', async () => {
+    const response = await fetch(confirmationUrl);
+    const text = await response.text();
+
+    expect(text).toBe('Invalid');
+  });
 });

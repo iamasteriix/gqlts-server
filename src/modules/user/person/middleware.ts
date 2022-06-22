@@ -6,11 +6,8 @@ import { Resolver } from "../../../types/graphql-utils";
  * custom functions.
  */
 export default async (resolver: Resolver, parent: any, args: any, context: any, info: any) => {
-    // run middleware
-
-    const result = await resolver(parent, args, context, info);
-
-    // run afterware
-
-    return result;
+  // run middleware
+  const result = await resolver(parent, args, context, info);
+  // run afterware
+  return result;
 }

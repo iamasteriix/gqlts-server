@@ -11,7 +11,10 @@ authorization. This includes:
 
 ## Getting started
 
-Before you can start the application, download the project and install the dependencies:
+Before you can start the application, make sure that you have downloaded and have running installations of 
+[Postgres](https://www.postgresql.org/download/) and [Redis](https://redis.io/download/). You can check for these by running the
+commands `psql` and `redis-server` respectively.
+Once you have them running, download the project and install the dependencies:
 ```
 git clone https://github.com/iamasteriix/gqlts-server.git
 npm i
@@ -48,7 +51,7 @@ compiling and running Typescript.
 
 The test suite is not the most robust (I apologize), and perhaps the biggest problem is that I have not been able to run the 
 tests in parallel. This forces us to run the tests individually. Currently, the test suite contains tests for each folder inside
-the *user* module (besides the inconsequential *tempdir*), and one inside *routes*. Running `npm test <dir-with-test>` should pass.
+the *user* module (besides the inconsequential *tempdir*), and one inside *helloWorld*. Running `npm test <dir-with-test>` should pass.
 I would appreciate improvements on the test suite.
 
 About the problem with testing, all(?) tests require starting a connection to some temporary postgres database instance, and each
