@@ -1,46 +1,54 @@
 import 'dotenv/config';
+import express from 'express';
+import http from 'http';
+import glob from 'glob';
 import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 import RedisRateLimitStore from 'rate-limit-redis';
-import { ContextFunction } from 'apollo-server-core';
-import { ExpressContext } from 'apollo-server-express';
-import { redis, redisPrefices } from '../redis';
-import { addResolversToSchema, mergeSchemas } from '@graphql-tools/schema';
+import { ApolloServerPluginDrainHttpServer, ContextFunction } from 'apollo-server-core';
+import { ApolloServer, ExpressContext } from 'apollo-server-express';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { loadSchema } from '@graphql-tools/load';
 import { join } from 'path';
-import { readdirSync } from 'fs';
-import { GraphQLSchema } from 'graphql';
+import { redis, redisPrefices } from '../redis';
 
 
 const RedisStore = connectRedis(session);
 export const isProduction = process.env.NODE_ENV === 'production';
+export const isTesting = process.env.NODE_ENV === 'test';
+export const app = express();
+export const httpServer = http.createServer(app);
 
 
 /**
- * This method retrieves the schema documents and adds their type definitions.
- * 
- * @returns `GraphqlSchema` the merged graphql schema.
+ * This function initializes the apolloserver constructor with the schema and type definitions.
+ * @returns an apolloServer constructor.
  */
- export const genSchema = async () => {
-  // create schema
-  const schemas: GraphQLSchema[] = [];
-  const folders = readdirSync(join(__dirname, '../modules/user'));
+export const buildApolloServer = async () => {
+  const pathToModules = join(__dirname, '../modules');
 
-  for (const folder of folders) {
-    const typeDefs = await loadSchema(`../modules/user/${folder}/schema.gql`, {
+  const typeDefs = await loadSchema(`${pathToModules}/**/schema.gql`,
+    {
       cwd: __dirname,
       assumeValid: true,
       assumeValidSDL: true,
       loaders: [new GraphQLFileLoader()]
     });
-    const { resolvers } = require(`../modules/user/${folder}/resolvers`);
-    const typeDefsWithResolvers = addResolversToSchema(typeDefs, resolvers);
-    schemas.push(typeDefsWithResolvers);
-  };
+  const resolvers = glob
+    .sync(`${pathToModules}/**/resolvers.?s`)
+    .map(resolver => require(resolver).resolvers);
 
-  return mergeSchemas({ schemas });
+  const schemaWithResolvers = makeExecutableSchema({ typeDefs, resolvers });
+
+  return new ApolloServer({
+    schema: schemaWithResolvers,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    context: contextOptions,
+    persistedQueries: false,
+    cache: 'bounded'
+  });
 }
 
 export const limiter = rateLimit({
@@ -71,7 +79,7 @@ export const sessionOptions = session({
   }
 });
 
-export const contextArgs: object | ContextFunction<ExpressContext, object> | undefined = ({ req }) => ({
+export const contextOptions: object | ContextFunction<ExpressContext, object> | undefined = ({ req }) => ({
   redis,
   url: req.protocol + '://' + req.get('host'),
   session: req.session,

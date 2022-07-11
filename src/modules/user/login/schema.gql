@@ -5,6 +5,11 @@ input UserInput {
 	password: String!
 }
 
+type LoginResponse {
+  errors: [Error!]
+  sessionId: String
+}
+
 type Mutation {
-	login(input: UserInput!): [Error!]
+	login(input: UserInput!): LoginResponse!
 }

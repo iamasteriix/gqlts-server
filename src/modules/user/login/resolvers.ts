@@ -48,7 +48,7 @@ export const resolvers: ResolverMap = {
       session.userId = user.id;
       if (request.sessionID) redis.lpush(`${redisPrefices.userSessionPrefix}${user.id}`, request.sessionID);
 
-      return null;
+      return { sessionId: request.sessionID };
     }
   }
 };

@@ -1,16 +1,19 @@
 import 'dotenv/config';
 import 'reflect-metadata';
-import http from 'http';
-import express from 'express';
 import cors from 'cors';
-import { ApolloServer } from 'apollo-server-express';
-import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 // import { auth } from 'express-openid-connect';
-import { genSchema } from './utils/serverConfigs';
 import { ServerDataSource } from './utils/selectConnection';
 import { changePassword, confirmEmail } from './routes/emailCallbacks';
-import { contextArgs, isProduction, limiter, sessionOptions } from './utils/serverConfigs';
 // import { isAuthenticated } from './routes/auth';
+import {
+  app,
+  httpServer,
+  buildApolloServer,
+  isProduction,
+  isTesting,
+  limiter,
+  sessionOptions
+} from './utils/serverConfigs';
 
 
 /**
@@ -21,10 +24,10 @@ import { contextArgs, isProduction, limiter, sessionOptions } from './utils/serv
  */
 export default async function server() {
 
-  const PORT = process.env.NODE_ENV === 'test' ? 4001 : 4000;
-  const app = express();
-  const httpServer = http.createServer(app);
+  const PORT = isProduction ? process.env.PORT : isTesting ? 4001 : 4000;
   const DataSource = ServerDataSource();
+  const server = await buildApolloServer();
+
 
   if (!isProduction) {
     app.set('trust proxy', true);
@@ -40,13 +43,8 @@ export default async function server() {
   app.get('/confirm/:id', confirmEmail);
   app.get('/change-password/:id', changePassword)
 
-  const server = new ApolloServer({
-    schema: await genSchema(),
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-    context: contextArgs
-  });
-
   await DataSource.initialize();
+  if (isProduction) await DataSource.runMigrations();
   await server.start();
   server.applyMiddleware({ app });
 
